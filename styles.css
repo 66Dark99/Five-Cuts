@@ -1,0 +1,105 @@
+body {
+    margin: 0;
+    font-family: 'Cinzel', serif;
+    background-color: #F5F5DC;
+    color: #4A4A4A;
+    overflow-x: hidden;
+}
+
+.navbar {
+    background-color: #1C2526;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.logo {
+    width: 50px;
+    height: 50px;
+    background-color: #B8860B;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.1);
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.nav-links li {
+    margin: 0 30px; /* زيادة المسافة بين التابات من 20px إلى 30px */
+}
+
+.nav-links a {
+    color: #F5F5DC;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #B8860B;
+}
+
+.burger {
+    display: none;
+    font-size: 24px;
+    color: #B8860B;
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+.btn {
+    background-color: #B8860B;
+    color: #1C2526;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Cinzel', serif;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #800000;
+    color: #F5F5DC;
+}
+
+@media (max-width: 768px) {
+    .burger {
+        display: block;
+    }
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        background-color: #1C2526;
+        width: 100%;
+        text-align: center;
+        opacity: 0; /* لبدء الأنيميشن من الصفر */
+        transform: translateY(-20px); /* بداية من أعلى قليلاً */
+        transition: opacity 0.5s ease, transform 0.5s ease; /* أنيميشن بطيء */
+    }
+    .nav-links.active {
+        display: flex;
+        opacity: 1;
+        transform: translateY(0); /* تنزل ببطء */
+    }
+    .nav-links li {
+        margin: 10px 0;
+    }
+}

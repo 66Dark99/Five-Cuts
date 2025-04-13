@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Five Cuts - Home</title>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" as="style" onload="this.rel='stylesheet'">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Cinzel', serif;
+            background: #1C2526;
+        }
+        .navbar {
+            background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            object-fit: cover;
+        }
+        .logo:hover {
+            transform: scale(1.1);
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0 auto;
+            padding: 0;
+        }
+        .nav-links li {
+            margin: 0 30px;
+        }
+        .nav-links a {
+            color: #F5F5DC;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: #B8860B;
+        }
+        .burger {
+            display: none;
+            font-size: 24px;
+            color: #B8860B;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+        .hero {
+            margin-top: 60px;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(45deg, #1C2526 0%, #2A3334 50%, #4A3F2B 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centers vertically */
+            align-items: center; /* Centers horizontally */
+            text-align: center; /* Ensures text is centered */
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(74, 63, 43, 0.2),
+                rgba(74, 63, 43, 0.2) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            opacity: 0.5;
+            z-index: 1;
+        }
+        .hero h1, .hero p, .hero .btn {
+            position: relative;
+            z-index: 2;
+            width: auto; /* Ensures elements don’t stretch unnecessarily */
+        }
+        .hero h1 {
+            color: #B8860B;
+            font-size: 48px;
+            margin: 0 0 40px 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        .hero p {
+            color: #D3D3D3;
+            font-size: 24px;
+            margin: 0 0 50px 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .hero .btn {
+            background-color: #B8860B;
+            color: #1C2526;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block; /* Ensures button stays centered */
+        }
+        .hero .btn:hover {
+            background-color: #D4A017;
+            color: #1C2526;
+        }
+        @media (max-width: 768px) {
+            .burger {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
+                width: 100%;
+                text-align: center;
+                opacity: 0;
+                transform: translateY(-20px);
+                transition: opacity 0.5s ease, transform 0.5s ease;
+            }
+            .nav-links.active {
+                display: flex;
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .nav-links li {
+                margin: 10px 0;
+            }
+            .hero h1 {
+                font-size: 36px;
+                margin-bottom: 30px;
+            }
+            .hero p {
+                font-size: 18px;
+                margin-bottom: 40px;
+            }
+            .hero {
+                padding: 60px 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 28px;
+                margin-bottom: 25px;
+            }
+            .hero p {
+                font-size: 16px;
+                margin-bottom: 30px;
+            }
+            .hero {
+                padding: 50px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <img src="logo.png" alt="Five Cuts Logo" class="logo">
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="tables.html">Tables</a></li>
+            <li><a href="chefs.html">Chefs</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="restaurant_orders.html">Orders</a></li>
+        </ul>
+        <div class="burger" id="burger" onclick="toggleMenu()">☰</div>
+    </nav>
+
+    <section class="hero">
+        <h1>Welcome to Five Cuts</h1>
+        <p>A Luxurious Dining Experience Awaits</p>
+        <a href="menu.html" class="btn">Discover More</a>
+    </section>
+
+    <script>
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const burger = document.getElementById('burger');
+            navLinks.classList.toggle('active');
+            burger.textContent = navLinks.classList.contains('active') ? '✖' : '☰';
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.navbar')) {
+                const navLinks = document.getElementById('navLinks');
+                const burger = document.getElementById('burger');
+                navLinks.classList.remove('active');
+                burger.textContent = '☰';
+            }
+        });
+    </script>
+</body>
+</html>

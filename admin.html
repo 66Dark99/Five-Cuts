@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Five Cuts</title>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" as="style" onload="this.rel='stylesheet'">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Cinzel', serif;
+            background: #1C2526;
+            color: #F5F5DC;
+            min-height: 100vh;
+        }
+        .admin-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(28, 37, 38, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            border: 1px solid #B8860B;
+        }
+        h1 {
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .reservations-list {
+            display: block;
+        }
+        .reservation-item {
+            background: rgba(42, 51, 52, 0.9);
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #B8860B;
+        }
+        .reservation-item p {
+            margin: 5px 0;
+            color: #F5F5DC;
+        }
+        .reservation-item button {
+            padding: 5px 15px;
+            background-color: #B8860B;
+            color: #1C2526;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-family: 'Cinzel', serif;
+        }
+        .reservation-item button:hover {
+            background-color: #D4A017;
+        }
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(42, 51, 52, 0.9);
+            color: #F5F5DC;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #B8860B;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            display: none;
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            z-index: 1000;
+        }
+        .message-box.success {
+            background: rgba(72, 91, 72, 0.9);
+        }
+        .message-box.error {
+            background: rgba(91, 72, 72, 0.9);
+        }
+        .confirm-modal, .edit-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(42, 51, 52, 0.9);
+            color: #F5F5DC;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #B8860B;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            display: none;
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            z-index: 2000;
+            width: 90%;
+            max-width: 400px;
+        }
+        .edit-modal {
+            max-height: 80vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .edit-modal::-webkit-scrollbar {
+            width: 10px;
+        }
+        .edit-modal::-webkit-scrollbar-track {
+            background: rgba(28, 37, 38, 0.9);
+            border-radius: 5px;
+        }
+        .edit-modal::-webkit-scrollbar-thumb {
+            background: #808080;
+            border-radius: 5px;
+        }
+        .edit-modal::-webkit-scrollbar-thumb:hover {
+            background: #A9A9A9;
+        }
+        .confirm-modal button, .edit-modal button {
+            padding: 5px 15px;
+            margin: 10px 5px;
+            background-color: #B8860B;
+            color: #1C2526;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+        }
+        .confirm-modal button:hover, .edit-modal button:hover {
+            background-color: #D4A017;
+        }
+        .edit-modal input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            background: rgba(28, 37, 38, 0.9);
+            border: 1px solid #B8860B;
+            border-radius: 5px;
+            color: #F5F5DC;
+            font-family: 'Cinzel', serif;
+        }
+        .edit-modal .menu-item {
+            background: rgba(28, 37, 38, 0.9);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #B8860B;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .edit-modal .menu-item.selected {
+            background: rgba(72, 91, 92, 0.9);
+        }
+        .edit-modal .menu-item h3 {
+            color: #F5F5DC;
+            font-size: 16px;
+            margin: 0;
+            padding: 5px 0;
+        }
+        .edit-modal .menu-item .slider-container {
+            display: none;
+            margin-top: 10px;
+        }
+        .edit-modal .menu-item.selected .slider-container {
+            display: block;
+        }
+        .edit-modal .menu-item input[type="range"] {
+            width: 100%;
+            background: linear-gradient(to right, #B8860B 0%, #B8860B var(--value), #4A3F2B var(--value), #4A3F2B 100%);
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 5px;
+            outline: none;
+            transition: background 0.1s ease;
+        }
+        .edit-modal .menu-item input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #F5F5DC;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+        .edit-modal .menu-item input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #F5F5DC;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            border: none;
+        }
+        .edit-modal .menu-item .quantity-label {
+            color: #F5F5DC;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>Reservations Management</h1>
+        <div class="reservations-list" id="reservationsList"></div>
+        <div class="message-box" id="messageBox"></div>
+        <div class="confirm-modal" id="confirmModal">
+            <p>Are you sure you want to cancel this reservation?</p>
+            <button onclick="confirmCancel(true)">Yes</button>
+            <button onclick="confirmCancel(false)">No</button>
+        </div>
+        <div class="edit-modal" id="editModal">
+            <h2>Edit Reservation</h2>
+            <input type="text" id="editUsername" placeholder="اسم المستخدم">
+            <input type="text" id="editPhone" placeholder="رقم الهاتف">
+            <div class="menu-item" data-item="Ribeye Steak">
+                <h3>Ribeye Steak</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <div class="menu-item" data-item="Filet Mignon">
+                <h3>Filet Mignon</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <div class="menu-item" data-item="T-Bone">
+                <h3>T-Bone</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <div class="menu-item" data-item="Wagyu">
+                <h3>Wagyu</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <div class="menu-item" data-item="Smoked Brisket">
+                <h3>Smoked Brisket</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <button onclick="saveEdit()">Save</button>
+            <button onclick="closeEditModal()">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        const menuItems = ['Ribeye Steak', 'Filet Mignon', 'T-Bone', 'Wagyu', 'Smoked Brisket'];
+        let reservationsData = [];
+        let pendingCancelCode = null;
+        let currentEditTableCode = null;
+        const ADMIN_CODE = 'admin123';
+
+        // DOM Elements
+        const reservationsList = document.getElementById('reservationsList');
+        const editModal = document.getElementById('editModal');
+
+        // Show Message Function
+        function showMessage(message, type = 'success') {
+            console.log(`Message: ${message}, Type: ${type}`);
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.className = `message-box ${type}`;
+            messageBox.style.display = 'block';
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 5000);
+        }
+
+        // Fetch Reservations
+        async function fetchReservations() {
+            try {
+                console.log('Fetching reservations from http://localhost:3000/admin/reservations');
+                const response = await fetch('http://localhost:3000/admin/reservations', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ adminCode: ADMIN_CODE })
+                });
+                console.log(`Response status: ${response.status}, OK: ${response.ok}`);
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `HTTP error: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Received reservations:', data);
+                reservationsData = data;
+                displayReservations();
+            } catch (error) {
+                console.error('Fetch error:', error.message, error.stack);
+                showMessage(
+                    'Cannot connect to the server at http://localhost:3000. Please ensure the backend server is running and check the console for details.',
+                    'error'
+                );
+                reservationsList.innerHTML = '<p>Failed to load reservations. Please check the server and refresh the page.</p>';
+            }
+        }
+
+        // Display Reservations
+        function displayReservations() {
+            console.log('Displaying reservations:', reservationsData);
+            reservationsList.innerHTML = '';
+            if (reservationsData.length === 0) {
+                reservationsList.innerHTML = '<p>No reservations available.</p>';
+            } else {
+                reservationsData.forEach(res => {
+                    const div = document.createElement('div');
+                    div.className = 'reservation-item';
+                    div.dataset.tableCode = res.table_code;
+                    div.innerHTML = `
+                        <p>Table: ${res.table_number}</p>
+                        <p>Username: ${res.username}</p>
+                        <p>Phone: ${res.phone_number}</p>
+                        <p>Table Code: ${res.table_code}</p>
+                        <p>Reservation Date: ${res.reservation_date}</p>
+                        <p>Items: ${[res.item1, res.item2, res.item3, res.item4, res.item5].filter(Boolean).join(', ') || 'None'}</p>
+                        <button onclick="showEditModal('${res.table_code}')">Edit</button>
+                        <button onclick="showConfirmModal('${res.table_code}')">Cancel</button>
+                    `;
+                    reservationsList.appendChild(div);
+                });
+            }
+        }
+
+        // Show Edit Modal
+        function showEditModal(tableCode) {
+            console.log('Opening edit modal for table code:', tableCode);
+            currentEditTableCode = tableCode;
+            const reservation = reservationsData.find(r => r.table_code === tableCode);
+            if (!reservation) {
+                console.error('Reservation not found for table code:', tableCode);
+                showMessage('Reservation not found.', 'error');
+                return;
+            }
+
+            document.getElementById('editUsername').value = reservation.username;
+            document.getElementById('editPhone').value = reservation.phone_number;
+
+            editModal.querySelectorAll('.menu-item').forEach(item => {
+                const itemName = item.getAttribute('data-item');
+                const slider = item.querySelector('input[type="range"]');
+                const quantityLabel = item.querySelector('.quantity-label');
+                const items = [reservation.item1, reservation.item2, reservation.item3, reservation.item4, reservation.item5].filter(Boolean);
+                const quantityMatch = items.find(i => i && i.startsWith(itemName));
+                const quantity = quantityMatch ? parseInt(quantityMatch.match(/x(\d+)/)?.[1] || 1) : 0;
+
+                slider.value = quantity;
+                quantityLabel.textContent = `Quantity: ${quantity}`;
+                slider.style.setProperty('--value', `${(quantity / 10) * 100}%`);
+                item.classList.toggle('selected', quantity > 0);
+
+                // Remove existing listeners
+                const h3 = item.querySelector('h3');
+                const newH3 = h3.cloneNode(true);
+                h3.parentNode.replaceChild(newH3, h3);
+
+                const newSlider = slider.cloneNode(true);
+                slider.parentNode.replaceChild(newSlider, slider);
+
+                // Add new listeners
+                newH3.addEventListener('click', () => {
+                    item.classList.toggle('selected');
+                    if (!item.classList.contains('selected')) {
+                        newSlider.value = 0;
+                        quantityLabel.textContent = 'Quantity: 0';
+                        newSlider.style.setProperty('--value', '0%');
+                    } else if (newSlider.value === '0') {
+                        newSlider.value = 1;
+                        quantityLabel.textContent = 'Quantity: 1';
+                        newSlider.style.setProperty('--value', '10%');
+                    }
+                });
+
+                newSlider.addEventListener('input', () => {
+                    const value = (newSlider.value / newSlider.max) * 100;
+                    newSlider.style.setProperty('--value', `${value}%`);
+                    quantityLabel.textContent = `Quantity: ${newSlider.value}`;
+                    if (newSlider.value === '0' && item.classList.contains('selected')) {
+                        item.classList.remove('selected');
+                    } else if (newSlider.value !== '0' && !item.classList.contains('selected')) {
+                        item.classList.add('selected');
+                    }
+                });
+            });
+
+            editModal.style.display = 'block';
+        }
+
+        // Close Edit Modal
+        function closeEditModal() {
+            console.log('Closing edit modal');
+            editModal.style.display = 'none';
+            currentEditTableCode = null;
+        }
+
+        // Save Edit
+        async function saveEdit() {
+            if (!currentEditTableCode) {
+                console.error('No table code selected for edit');
+                showMessage('No reservation selected.', 'error');
+                return;
+            }
+
+            console.log('Saving edit for table code:', currentEditTableCode);
+            const username = document.getElementById('editUsername').value.trim();
+            const phoneNumber = document.getElementById('editPhone').value.trim();
+            const itemsWithQuantities = Array.from(editModal.querySelectorAll('.menu-item.selected'))
+                .map(item => {
+                    const itemName = item.getAttribute('data-item');
+                    const quantity = parseInt(item.querySelector('input[type="range"]').value);
+                    return quantity > 0 ? { item: itemName, quantity } : null;
+                })
+                .filter(item => item !== null);
+
+            const items = itemsWithQuantities.map(i => `${i.item} (x${i.quantity})`);
+
+            try {
+                console.log('Sending update request:', { tableCode: currentEditTableCode, username, phoneNumber, items });
+                const response = await fetch('http://localhost:3000/update', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tableCode: currentEditTableCode, items })
+                });
+                console.log(`Update response status: ${response.status}`);
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `HTTP error: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Update response data:', data);
+
+                showMessage(data.message || 'Reservation updated successfully.', 'success');
+                const index = reservationsData.findIndex(r => r.table_code === currentEditTableCode);
+                if (index !== -1) {
+                    reservationsData[index].username = username;
+                    reservationsData[index].phone_number = phoneNumber;
+                    reservationsData[index].item1 = items[0] || null;
+                    reservationsData[index].item2 = items[1] || null;
+                    reservationsData[index].item3 = items[2] || null;
+                    reservationsData[index].item4 = items[3] || null;
+                    reservationsData[index].item5 = items[4] || null;
+                }
+                closeEditModal();
+                displayReservations();
+            } catch (error) {
+                console.error('Update error:', error.message, error.stack);
+                showMessage(
+                    'Cannot connect to the server at http://localhost:3000/update. Please ensure the backend server is running.',
+                    'error'
+                );
+            }
+        }
+
+        // Show Confirm Modal
+        function showConfirmModal(tableCode) {
+            console.log('Opening confirm modal for table code:', tableCode);
+            pendingCancelCode = tableCode;
+            document.getElementById('confirmModal').style.display = 'block';
+        }
+
+        // Handle Confirmation
+        async function confirmCancel(confirmed) {
+            console.log('Confirm cancel:', confirmed, 'Table code:', pendingCancelCode);
+            const modal = document.getElementById('confirmModal');
+            modal.style.display = 'none';
+            if (!confirmed || !pendingCancelCode) return;
+
+            try {
+                console.log('Sending cancel request for table code:', pendingCancelCode);
+                const response = await fetch('http://localhost:3000/cancel', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tableCode: pendingCancelCode })
+                });
+                console.log(`Cancel response status: ${response.status}`);
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `HTTP error: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log('Cancel response data:', data);
+
+                showMessage(data.message || 'Reservation canceled successfully.', 'success');
+                reservationsData = reservationsData.filter(r => r.table_code !== pendingCancelCode);
+                displayReservations();
+            } catch (error) {
+                console.error('Cancel error:', error.message, error.stack);
+                showMessage(
+                    'Cannot connect to the server at http://localhost:3000/cancel. Please ensure the backend server is running.',
+                    'error'
+                );
+            }
+            pendingCancelCode = null;
+        }
+
+        // Fetch Reservations on Page Load
+        window.onload = fetchReservations;
+    </script>
+</body>
+</html>

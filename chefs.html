@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Five Cuts - Chefs</title>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" as="style" onload="this.rel='stylesheet'">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Cinzel', serif;
+            overflow-x: hidden;
+            background: #1C2526;
+        }
+        .navbar {
+            background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            object-fit: cover;
+        }
+        .logo:hover {
+            transform: scale(1.1);
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0 auto;
+            padding: 0;
+        }
+        .nav-links li {
+            margin: 0 30px;
+        }
+        .nav-links a {
+            color: #F5F5DC;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: #B8860B;
+        }
+        .burger {
+            display: none;
+            font-size: 24px;
+            color: #B8860B;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+        .chefs-container {
+            margin-top: 60px;
+            width: 100vw;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #1C2526 0%, #2A3334 50%, #4A3F2B 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7);
+            padding: 80px 50px;
+            text-align: center;
+        }
+        .chefs-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(74, 63, 43, 0.2),
+                rgba(74, 63, 43, 0.2) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            opacity: 0.5;
+            z-index: 1;
+        }
+        .chef {
+            position: relative;
+            z-index: 2;
+            margin: 20px;
+            display: inline-block;
+        }
+        .chef.main {
+            margin-bottom: 40px;
+        }
+        .chef img {
+            width: 150px; /* Increased from 120px */
+            height: 150px; /* Increased from 120px */
+            border: 4px solid #4A4A4A;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            object-fit: cover;
+            object-position: center;
+        }
+        .chef.main img {
+            width: 180px; /* Increased from 150px */
+            height: 180px; /* Increased from 150px */
+            border-color: #B8860B;
+            object-fit: cover;
+            object-position: center;
+        }
+        .chef:hover img {
+            transform: scale(1.1);
+        }
+        .chef h3 {
+            color: #B8860B;
+            font-size: 20px;
+            margin: 10px 0 5px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .chef p {
+            color: #D3D3D3;
+            font-size: 16px;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .chefs-container h1 {
+            color: #B8860B;
+            font-size: 36px;
+            margin-bottom: 40px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 2;
+        }
+        .sub-chefs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .burger {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
+                width: 100%;
+                text-align: center;
+                opacity: 0;
+                transform: translateY(-20px);
+                transition: opacity 0.5s ease, transform 0.5s ease;
+            }
+            .nav-links.active {
+                display: flex;
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .nav-links li {
+                margin: 10px 0;
+            }
+            .chef img {
+                width: 120px; /* Increased from 100px */
+                height: 120px; /* Increased from 100px */
+            }
+            .chef.main img {
+                width: 140px; /* Increased from 120px */
+                height: 140px; /* Increased from 120px */
+            }
+            .chef h3 {
+                font-size: 18px;
+            }
+            .chef p {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <img src="logo.png" alt="Five Cuts Logo" class="logo">
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="tables.html">Tables</a></li>
+            <li><a href="chefs.html">Chefs</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="restaurant_orders.html">Orders</a></li>
+        </ul>
+        <div class="burger" id="burger" onclick="toggleMenu()">☰</div>
+    </nav>
+
+    <div class="chefs-container">
+        <h1>Meet Our Chefs</h1>
+        <div class="chef main">
+            <img src="chef4.png" alt="Head Chef">
+            <h3>Chef Mohammed</h3>
+            <p>Head Chef - 15 Years of Excellence</p>
+        </div>
+        <div class="sub-chefs">
+            <div class="chef">
+                <img src="chef3.png" alt="Chef 1">
+                <h3>Chef Khalid</h3>
+                <p>Steak Specialist</p>
+            </div>
+            <div class="chef">
+                <img src="chef2.png" alt="Chef 2">
+                <h3>Chef Ahmed</h3>
+                <p>Wagyu Expert</p>
+            </div>
+            <div class="chef">
+                <img src="chef1.png" alt="Chef 3">
+                <h3>Chef Ali</h3>
+                <p>Grill Master</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const burger = document.getElementById('burger');
+            navLinks.classList.toggle('active');
+            burger.textContent = navLinks.classList.contains('active') ? '✖' : '☰';
+        }
+
+        document.addEventListener('click', (e) => {
+            const navLinks = document.getElementById('navLinks');
+            const burger = document.getElementById('burger');
+            if (!e.target.closest('.navbar') && navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+                burger.textContent = '☰';
+            }
+        });
+    </script>
+</body>
+</html>

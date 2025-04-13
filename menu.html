@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Five Cuts - Menu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
+            font-family: 'Cinzel', serif;
+        }
+        .navbar {
+            background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            object-fit: cover;
+        }
+        .logo:hover {
+            transform: scale(1.1);
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0 auto;
+            padding: 0;
+        }
+        .nav-links li {
+            margin: 0 30px;
+        }
+        .nav-links a {
+            color: #F5F5DC;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: #B8860B;
+        }
+        .burger {
+            display: none;
+            font-size: 24px;
+            color: #B8860B;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+        .menu-container {
+            margin-top: 80px;
+            width: 100vw;
+            padding: 20px 0;
+            box-sizing: border-box;
+        }
+        .menu-item {
+            width: 100%;
+            background: rgba(28, 37, 38, 0.9);
+            margin-bottom: 10px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .menu-item:hover {
+            background: rgba(42, 51, 52, 0.9);
+        }
+        .menu-item img {
+            width: 250px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .menu-item .item-details {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .menu-item h2 {
+            color: #F5F5DC;
+            font-size: 24px;
+            margin: 0 0 5px 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .menu-item .price {
+            color: #B8860B;
+            font-size: 18px;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        .menu-item .btn {
+            background-color: #B8860B;
+            color: #1C2526;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Cinzel', serif;
+            transition: all 0.3s ease;
+        }
+        .menu-item .btn:hover {
+            background-color: #D4A017;
+        }
+        .ingredients {
+            display: none;
+            background: rgba(74, 63, 43, 0.9);
+            padding: 40px 15px 15px 15px;
+            margin-top: 10px;
+            color: #F5F5DC;
+            font-size: 16px;
+            border-radius: 5px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        .ingredients.active {
+            display: block;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #F5F5DC;
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .close-btn:hover {
+            color: #B8860B;
+        }
+        @media (max-width: 768px) {
+            .burger {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
+                width: 100%;
+                text-align: center;
+                opacity: 0;
+                transform: translateY(-20px);
+                transition: opacity 0.5s ease, transform 0.5s ease;
+            }
+            .nav-links.active {
+                display: flex;
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .nav-links li {
+                margin: 10px 0;
+            }
+            .menu-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .menu-item img {
+                width: 100%;
+                height: 200px;
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            .menu-item .item-details {
+                width: 100%;
+                align-items: flex-start;
+            }
+            .menu-item h2 {
+                font-size: 20px;
+                margin-bottom: 5px;
+            }
+            .menu-item .price {
+                font-size: 16px;
+            }
+            .menu-item .btn {
+                align-self: center;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <img src="logo.png" alt="Five Cuts Logo" class="logo">
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="tables.html">Tables</a></li>
+            <li><a href="chefs.html">Chefs</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="restaurant_orders.html">Orders</a></li>
+        </ul>
+        <div class="burger" id="burger" onclick="toggleMenu()">☰</div>
+    </nav>
+
+    <div class="menu-container">
+        <div class="menu-item">
+            <img src="ribeye steak.jpeg" alt="Ribeye Steak">
+            <div class="item-details">
+                <h2>Ribeye Steak</h2>
+                <span class="price">$35</span>
+            </div>
+            <button class="btn" onclick="toggleIngredients(this)">Ingredients</button>
+            <div class="ingredients">
+                <span class="close-btn" onclick="closeIngredients(this)">✖</span>
+                <p>Prime Ribeye - 300g</p>
+                <p>Sea Salt - 5g</p>
+                <p>Black Pepper - 3g</p>
+                <p>Garlic Butter - 20g</p>
+                <p>Rosemary - 2 sprigs</p>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <img src="filet mignon.jpeg" alt="Filet Mignon">
+            <div class="item-details">
+                <h2>Filet Mignon</h2>
+                <span class="price">$40</span>
+            </div>
+            <button class="btn" onclick="toggleIngredients(this)">Ingredients</button>
+            <div class="ingredients">
+                <span class="close-btn" onclick="closeIngredients(this)">✖</span>
+                <p>Filet Mignon - 250g</p>
+                <p>Olive Oil - 10ml</p>
+                <p>Thyme - 3 sprigs</p>
+                <p>Grape Juice Reduction - 50ml</p>
+                <p>Salt - 4g</p>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <img src="t-bone.jpeg" alt="T-Bone">
+            <div class="item-details">
+                <h2>T-Bone</h2>
+                <span class="price">$45</span>
+            </div>
+            <button class="btn" onclick="toggleIngredients(this)">Ingredients</button>
+            <div class="ingredients">
+                <span class="close-btn" onclick="closeIngredients(this)">✖</span>
+                <p>T-Bone Steak - 400g</p>
+                <p>Coarse Salt - 6g</p>
+                <p>Crushed Peppercorns - 5g</p>
+                <p>Herb Butter - 25g</p>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <img src="wagyu.jpeg" alt="Wagyu">
+            <div class="item-details">
+                <h2>Wagyu</h2>
+                <span class="price">$60</span>
+            </div>
+            <button class="btn" onclick="toggleIngredients(this)">Ingredients</button>
+            <div class="ingredients">
+                <span class="close-btn" onclick="closeIngredients(this)">✖</span>
+                <p>Wagyu Beef - 200g</p>
+                <p>Soy Sauce - 15ml</p>
+                <p>Rice Vinegar - 10ml</p>
+                <p>Wasabi - 5g</p>
+                <p>Salt - 3g</p>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <img src="smoked brisket.jpeg" alt="Smoked Brisket">
+            <div class="item-details">
+                <h2>Smoked Brisket</h2>
+                <span class="price">$30</span>
+            </div>
+            <button class="btn" onclick="toggleIngredients(this)">Ingredients</button>
+            <div class="ingredients">
+                <span class="close-btn" onclick="closeIngredients(this)">✖</span>
+                <p>Beef Brisket - 500g</p>
+                <p>BBQ Rub - 10g</p>
+                <p>Smoked Paprika - 5g</p>
+                <p>Brown Sugar - 8g</p>
+                <p>Hickory Smoke - Infused</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const burger = document.getElementById('burger');
+            navLinks.classList.toggle('active');
+            burger.textContent = navLinks.classList.contains('active') ? '✖' : '☰';
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.navbar')) {
+                const navLinks = document.getElementById('navLinks');
+                const burger = document.getElementById('burger');
+                navLinks.classList.remove('active');
+                burger.textContent = '☰';
+            }
+        });
+
+        function toggleIngredients(button) {
+            const ingredients = button.nextElementSibling;
+            ingredients.classList.add('active');
+            button.style.display = 'none';
+        }
+
+        function closeIngredients(closeBtn) {
+            const ingredients = closeBtn.parentElement;
+            const button = ingredients.previousElementSibling;
+            ingredients.classList.remove('active');
+            button.style.display = 'block';
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92d79b00ea2db0d6',t:'MTc0NDE3NjU1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserve Table - Five Cuts</title>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" as="style" onload="this.rel='stylesheet'">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Cinzel', serif;
+            background: #1C2526;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        .form-container {
+            background: rgba(28, 37, 38, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 400px;
+            border: 1px solid #B8860B;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh; /* الفورم يأخذ طول الصفحة كحد أدنى ويتوسع إذا زاد المحتوى */
+            margin-top: 20px; /* هامش علوي لإبعاد الفورم عن أعلى الصفحة */
+        }
+        .form-container h1 {
+            color: #F5F5DC;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            font-size: 1.8em;
+        }
+        .form-container input[type="text"],
+        .form-container input[type="datetime-local"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            background: rgba(42, 51, 52, 0.9);
+            border: 1px solid #B8860B;
+            border-radius: 5px;
+            color: #F5F5DC;
+            font-family: 'Cinzel', serif;
+        }
+        .form-container input[type="datetime-local"] {
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .form-container input[type="text"]::placeholder,
+        .form-container input[type="datetime-local"]::placeholder {
+            color: #B8860B;
+            opacity: 0.7;
+        }
+        .form-container .menu-item {
+            background: rgba(42, 51, 52, 0.9);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #B8860B;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+        .form-container .menu-item.selected {
+            background: rgba(72, 91, 92, 0.9);
+        }
+        .form-container .menu-item h3 {
+            color: #F5F5DC;
+            font-size: 16px;
+            margin: 0;
+            padding: 5px 0;
+        }
+        .form-container .menu-item .slider-container {
+            display: none;
+            margin-top: 10px;
+        }
+        .form-container .menu-item.selected .slider-container {
+            display: block;
+        }
+        .form-container .menu-item input[type="range"] {
+            width: 100%;
+            background: linear-gradient(to right, #B8860B 0%, #B8860B var(--value), #4A3F2B var(--value), #4A3F2B 100%);
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 5px;
+            outline: none;
+            transition: background 0.1s ease;
+        }
+        .form-container .menu-item input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #F5F5DC;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+        .form-container .menu-item input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #F5F5DC;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            border: none;
+        }
+        .form-container .menu-item .quantity-label {
+            color: #F5F5DC;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 5px;
+        }
+        .form-container button {
+            background-color: #B8860B;
+            color: #1C2526;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-family: 'Cinzel', serif;
+            font-size: 16px;
+        }
+        .form-container button:hover {
+            background-color: #D4A017;
+        }
+        .form-container button:disabled {
+            background-color: #4A3F2B;
+            cursor: not-allowed;
+        }
+        .code-display {
+            display: none;
+            background: rgba(42, 51, 52, 0.9);
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #B8860B;
+            text-align: center;
+            width: 100%;
+        }
+        .code-display p {
+            color: #F5F5DC;
+            margin: 0;
+            font-size: 16px;
+        }
+        .code-display #tableCode {
+            color: #B8860B;
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-size: 20px;
+        }
+        @media (max-width: 480px) {
+            .form-container {
+                width: 95%;
+                padding: 15px;
+                margin-top: 15px; /* هامش أصغر للشاشات الصغيرة */
+            }
+            .form-container h1 {
+                font-size: 1.5em;
+            }
+            .form-container .menu-item h3 {
+                font-size: 14px;
+            }
+            .form-container button {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1 id="table-title">Reserve Table</h1>
+        <div id="reservationForm">
+            <input type="text" id="username" placeholder="Your Name" required>
+            <input type="text" id="phone" placeholder="Phone Number" required>
+            <input type="datetime-local" id="reservationTime" placeholder="Reservation Date & Time" required>
+            <div class="menu-item" data-item="Ribeye Steak">
+                <h3>Ribeye Steak</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <div class="menu-item" data-item="Filet Mignon">
+                <h3>Filet Mignon</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <div class="menu-item" data-item="T-Bone">
+                <h3>T-Bone</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <div class="menu-item" data-item="Wagyu">
+                <h3>Wagyu</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <div class="menu-item" data-item="Smoked Brisket">
+                <h3>Smoked Brisket</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <button type="button" id="reserveButton">Reserve</button>
+        </div>
+        <div class="code-display" id="codeDisplay">
+            <p>Your Table Code: <span id="tableCode"></span></p>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const tableNumber = urlParams.get('table');
+
+        // Check if reservation is already completed
+        const savedReservation = localStorage.getItem('reservation');
+        if (savedReservation) {
+            const { tableNumber: savedTable, tableCode } = JSON.parse(savedReservation);
+            if (savedTable === tableNumber) {
+                showTableCode(savedTable, tableCode);
+            } else {
+                localStorage.removeItem('reservation');
+                initializeForm();
+            }
+        } else {
+            initializeForm();
+        }
+
+        function initializeForm() {
+            if (tableNumber) {
+                document.getElementById('table-title').textContent = `Reserve Table ${tableNumber}`;
+            } else {
+                alert('No table selected. Please choose a table to proceed.');
+            }
+
+            // Smooth slider and item selection
+            document.querySelectorAll('.menu-item').forEach(item => {
+                const h3 = item.querySelector('h3');
+                const slider = item.querySelector('input[type="range"]');
+                const quantityLabel = item.querySelector('.quantity-label');
+
+                h3.addEventListener('click', () => {
+                    item.classList.toggle('selected');
+                    if (!item.classList.contains('selected')) {
+                        slider.value = 0;
+                        quantityLabel.textContent = 'Quantity: 0';
+                        slider.style.setProperty('--value', '0%');
+                    } else if (slider.value === '0') {
+                        slider.value = 1;
+                        quantityLabel.textContent = 'Quantity: 1';
+                        slider.style.setProperty('--value', '10%');
+                    }
+                });
+
+                slider.addEventListener('input', () => {
+                    const value = (slider.value / slider.max) * 100;
+                    slider.style.setProperty('--value', `${value}%`);
+                    quantityLabel.textContent = `Quantity: ${slider.value}`;
+                    if (slider.value === '0' && item.classList.contains('selected')) {
+                        item.classList.remove('selected');
+                    } else if (slider.value !== '0' && !item.classList.contains('selected')) {
+                        item.classList.add('selected');
+                    }
+                });
+            });
+
+            document.getElementById('reserveButton').addEventListener('click', async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                console.log('Starting reservation process');
+
+                const username = document.getElementById('username').value.trim();
+                const phoneNumber = document.getElementById('phone').value.trim();
+                const reservationTime = document.getElementById('reservationTime').value;
+                const itemsWithQuantities = Array.from(document.querySelectorAll('.menu-item.selected'))
+                    .map(item => {
+                        const itemName = item.getAttribute('data-item');
+                        const quantity = parseInt(item.querySelector('input[type="range"]').value);
+                        return quantity > 0 ? { item: itemName, quantity } : null;
+                    })
+                    .filter(item => item !== null);
+
+                if (!tableNumber) {
+                    alert('No table selected. Please choose a table from the tables page.');
+                    return;
+                }
+                if (username.length < 2) {
+                    alert('Name must be at least 2 characters long.');
+                    return;
+                }
+                if (!/^\d{10,}$/.test(phoneNumber)) {
+                    alert('Please enter a valid phone number (at least 10 digits).');
+                    return;
+                }
+                if (!reservationTime) {
+                    alert('Please select a reservation date and time.');
+                    return;
+                }
+                if (itemsWithQuantities.length === 0) {
+                    alert('Please select at least one item with a quantity greater than 0.');
+                    return;
+                }
+
+                const reserveButton = document.getElementById('reserveButton');
+                reserveButton.textContent = 'Reserving...';
+                reserveButton.disabled = true;
+                console.log('Sending request to server');
+
+                try {
+                    const items = itemsWithQuantities.map(i => `${i.item} (x${i.quantity})`);
+                    const response = await fetch('http://localhost:3000/reserve', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ tableNumber, username, phoneNumber, reservationTime, items })
+                    });
+
+                    const data = await response.json();
+                    console.log('Server response:', data);
+
+                    if (response.ok && data.tableCode) {
+                        console.log('Reservation successful, showing code');
+                        localStorage.setItem('reservation', JSON.stringify({ tableNumber, tableCode: data.tableCode }));
+                        showTableCode(tableNumber, data.tableCode);
+                    } else {
+                        alert(data.message || 'This table is already reserved or an error occurred.');
+                        reserveButton.textContent = 'Reserve';
+                        reserveButton.disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Error sending reservation:', error);
+                    alert('Unable to connect to the server. Ensure the server is running at http://localhost:3000 and try again.');
+                    reserveButton.textContent = 'Reserve';
+                    reserveButton.disabled = false;
+                }
+            });
+        }
+
+        function showTableCode(tableNumber, tableCode) {
+            const formContainer = document.querySelector('.form-container');
+            const reservationForm = document.getElementById('reservationForm');
+            const codeDisplay = document.getElementById('codeDisplay');
+            const tableCodeSpan = document.getElementById('tableCode');
+            const tableTitle = document.getElementById('table-title');
+
+            if (reservationForm) reservationForm.remove();
+            tableCodeSpan.textContent = tableCode;
+            codeDisplay.style.display = 'block';
+            tableTitle.textContent = `Reservation Confirmed for Table ${tableNumber}`;
+            formContainer.style.padding = '30px';
+            console.log('Code now permanently displayed');
+        }
+    </script>
+</body>
+</html>

@@ -343,7 +343,7 @@
             }
 
             try {
-                const response = await fetch(`http://localhost:3000/orders?tableCode=${tableCode}`);
+                const response = await fetch(`https://five-cuts.vercel.app/orders?tableCode=${tableCode}`);
                 const orders = await response.json();
 
                 if (orders.length === 0) {
@@ -428,7 +428,7 @@
             }
 
             try {
-                const response = await fetch('http://localhost:3000/update', {
+                const response = await fetch('https://five-cuts.vercel.app/update', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tableCode: currentTableCode, tableNumber, username, phoneNumber, reservationTime, items: itemsWithQuantities })
@@ -456,7 +456,7 @@
             if (!confirm('Are you sure you want to cancel this reservation?')) return;
 
             try {
-                const response = await fetch('http://localhost:3000/cancel', {
+                const response = await fetch('https://five-cuts.vercel.app/cancel', {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tableCode: currentTableCode })
@@ -538,5 +538,5 @@
             });
         });
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92ff4ad789939ad2',t:'MTc0NDU5MjcwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

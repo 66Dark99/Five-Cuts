@@ -277,8 +277,8 @@
         // Fetch Reservations
         async function fetchReservations() {
             try {
-                console.log('Fetching reservations from http://localhost:3000/admin/reservations');
-                const response = await fetch('http://localhost:3000/admin/reservations', {
+                console.log('Fetching reservations from https://five-cuts.vercel.app/admin/reservations');
+                const response = await fetch('https://five-cuts.vercel.app/admin/reservations', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ adminCode: ADMIN_CODE })
@@ -295,7 +295,7 @@
             } catch (error) {
                 console.error('Fetch error:', error.message, error.stack);
                 showMessage(
-                    'Cannot connect to the server at http://localhost:3000. Please ensure the backend server is running and check the console for details.',
+                    'Cannot connect to the server at https://five-cuts.vercel.app. Please check the console for details.',
                     'error'
                 );
                 reservationsList.innerHTML = '<p>Failed to load reservations. Please check the server and refresh the page.</p>';
@@ -422,7 +422,7 @@
 
             try {
                 console.log('Sending update request:', { tableCode: currentEditTableCode, username, phoneNumber, items });
-                const response = await fetch('http://localhost:3000/update', {
+                const response = await fetch('https://five-cuts.vercel.app/update', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tableCode: currentEditTableCode, items })
@@ -451,7 +451,7 @@
             } catch (error) {
                 console.error('Update error:', error.message, error.stack);
                 showMessage(
-                    'Cannot connect to the server at http://localhost:3000/update. Please ensure the backend server is running.',
+                    'Cannot connect to the server at https://five-cuts.vercel.app/update. Please ensure the backend server is running.',
                     'error'
                 );
             }
@@ -473,7 +473,7 @@
 
             try {
                 console.log('Sending cancel request for table code:', pendingCancelCode);
-                const response = await fetch('http://localhost:3000/cancel', {
+                const response = await fetch('https://five-cuts.vercel.app/cancel', {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tableCode: pendingCancelCode })
@@ -492,7 +492,7 @@
             } catch (error) {
                 console.error('Cancel error:', error.message, error.stack);
                 showMessage(
-                    'Cannot connect to the server at http://localhost:3000/cancel. Please ensure the backend server is running.',
+                    'Cannot connect to the server at https://five-cuts.vercel.app/cancel. Please ensure the backend server is running.',
                     'error'
                 );
             }
@@ -502,5 +502,5 @@
         // Fetch Reservations on Page Load
         window.onload = fetchReservations;
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92ff4ab6f9879add',t:'MTc0NDU5MjY5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

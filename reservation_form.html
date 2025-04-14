@@ -326,7 +326,7 @@
 
                 try {
                     const items = itemsWithQuantities.map(i => `${i.item} (x${i.quantity})`);
-                    const response = await fetch('http://localhost:3000/reserve', {
+                    const response = await fetch('https://five-cuts.vercel.app/reserve', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ tableNumber, username, phoneNumber, reservationTime, items })

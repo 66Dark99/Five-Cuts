@@ -310,6 +310,7 @@
                 reservationsList.innerHTML = '<p>No reservations available.</p>';
             } else {
                 reservationsData.forEach(res => {
+                    const items = Array.isArray(res.items) ? res.items : JSON.parse(res.items || '[]');
                     const div = document.createElement('div');
                     div.className = 'reservation-item';
                     div.dataset.tableCode = res.table_code;
@@ -318,8 +319,8 @@
                         <p>Username: ${res.username}</p>
                         <p>Phone: ${res.phone_number}</p>
                         <p>Table Code: ${res.table_code}</p>
-                        <p>Reservation Date: ${res.reservation_date}</p>
-                        <p>Items: ${[res.item1, res.item2, res.item3, res.item4, res.item5].filter(Boolean).join(', ') || 'None'}</p>
+                        <p>Reservation Time: ${res.reservation_time || 'Not set'}</p>
+                        <p>Items: ${items.join(', ') || 'None'}</p>
                         <button onclick="showEditModal('${res.table_code}')">Edit</button>
                         <button onclick="showConfirmModal('${res.table_code}')">Cancel</button>
                     `;
@@ -346,8 +347,8 @@
                 const itemName = item.getAttribute('data-item');
                 const slider = item.querySelector('input[type="range"]');
                 const quantityLabel = item.querySelector('.quantity-label');
-                const items = [reservation.item1, reservation.item2, reservation.item3, reservation.item4, reservation.item5].filter(Boolean);
-                const quantityMatch = items.find(i => i && i.startsWith(itemName));
+                const items = Array.isArray(reservation.items) ? reservation.items : JSON.parse(reservation.items || '[]');
+                const quantityMatch = items.find(i => i && i.includes(itemName));
                 const quantity = quantityMatch ? parseInt(quantityMatch.match(/x(\d+)/)?.[1] || 1) : 0;
 
                 slider.value = quantity;
@@ -414,18 +415,37 @@
                 .map(item => {
                     const itemName = item.getAttribute('data-item');
                     const quantity = parseInt(item.querySelector('input[type="range"]').value);
-                    return quantity > 0 ? { item: itemName, quantity } : null;
+                    return quantity > 0 ? `${itemName} (x${quantity})` : null;
                 })
                 .filter(item => item !== null);
 
-            const items = itemsWithQuantities.map(i => `${i.item} (x${i.quantity})`);
+            if (username.length < 2) {
+                showMessage('Name must be at least 2 characters long.', 'error');
+                return;
+            }
+            if (!/^\d{10,}$/.test(phoneNumber)) {
+                showMessage('Please enter a valid phone number (at least 10 digits).', 'error');
+                return;
+            }
+            if (itemsWithQuantities.length === 0) {
+                showMessage('Please select at least one item with a quantity greater than 0.', 'error');
+                return;
+            }
 
             try {
-                console.log('Sending update request:', { tableCode: currentEditTableCode, username, phoneNumber, items });
+                console.log('Sending update request:', { tableCode: currentEditTableCode, username, phoneNumber, items: itemsWithQuantities });
+                const reservation = reservationsData.find(r => r.table_code === currentEditTableCode);
                 const response = await fetch('https://five-cuts.vercel.app/update', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tableCode: currentEditTableCode, items })
+                    body: JSON.stringify({
+                        tableCode: currentEditTableCode,
+                        tableNumber: reservation.table_number,
+                        username,
+                        phoneNumber,
+                        reservationTime: reservation.reservation_time,
+                        items: itemsWithQuantities
+                    })
                 });
                 console.log(`Update response status: ${response.status}`);
                 if (!response.ok) {
@@ -440,20 +460,13 @@
                 if (index !== -1) {
                     reservationsData[index].username = username;
                     reservationsData[index].phone_number = phoneNumber;
-                    reservationsData[index].item1 = items[0] || null;
-                    reservationsData[index].item2 = items[1] || null;
-                    reservationsData[index].item3 = items[2] || null;
-                    reservationsData[index].item4 = items[3] || null;
-                    reservationsData[index].item5 = items[4] || null;
+                    reservationsData[index].items = itemsWithQuantities;
                 }
                 closeEditModal();
                 displayReservations();
             } catch (error) {
                 console.error('Update error:', error.message, error.stack);
-                showMessage(
-                    'Cannot connect to the server at https://five-cuts.vercel.app/update. Please ensure the backend server is running.',
-                    'error'
-                );
+                showMessage('Unable to update reservation. Please try again.', 'error');
             }
         }
 
@@ -491,10 +504,7 @@
                 displayReservations();
             } catch (error) {
                 console.error('Cancel error:', error.message, error.stack);
-                showMessage(
-                    'Cannot connect to the server at https://five-cuts.vercel.app/cancel. Please ensure the backend server is running.',
-                    'error'
-                );
+                showMessage('Unable to cancel reservation. Please try again.', 'error');
             }
             pendingCancelCode = null;
         }
@@ -502,5 +512,5 @@
         // Fetch Reservations on Page Load
         window.onload = fetchReservations;
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92ff4ab6f9879add',t:'MTc0NDU5MjY5NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>

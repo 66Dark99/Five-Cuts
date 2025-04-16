@@ -1,4 +1,9 @@
 const express = require('express');
+const path = require('path');
+
+
+// لخدمة الملفات الثابتة من الجذر مباشرة
+app.use(express.static(__dirname));
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
 const crypto = require('crypto');

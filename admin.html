@@ -257,6 +257,7 @@
         let pendingCancelCode = null;
         let currentEditTableCode = null;
         const ADMIN_CODE = 'admin123';
+        const SERVER_URL = 'https://five-cuts.vercel.app/admin/reservations';
 
         // DOM Elements
         const reservationsList = document.getElementById('reservationsList');
@@ -274,20 +275,47 @@
             }, 5000);
         }
 
+        // Test Server Availability
+        async function testServer() {
+            try {
+                const response = await fetch('https://five-cuts.vercel.app/', { method: 'HEAD', mode: 'cors' });
+                console.log('Server test response:', response.status);
+                return response.ok;
+            } catch (error) {
+                console.error('Server test failed:', error);
+                return false;
+            }
+        }
+
         // Fetch Reservations
         async function fetchReservations() {
+            reservationsList.innerHTML = '<p>Loading reservations...</p>';
+            const isServerAvailable = await testServer();
+            if (!isServerAvailable) {
+                showMessage('Server is not reachable. Please check your connection or server status.', 'error');
+                reservationsList.innerHTML = '<p>Failed to load reservations. Server is not responding.</p>';
+                return;
+            }
+
             try {
-                console.log('Fetching reservations from https://five-cuts.vercel.app/admin/reservations');
-                const response = await fetch('https://five-cuts.vercel.app/admin/reservations', {
+                console.log(`Sending POST request to ${SERVER_URL}`);
+                const response = await fetch(SERVER_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ adminCode: ADMIN_CODE })
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ adminCode: ADMIN_CODE }),
+                    mode: 'cors',
+                    credentials: 'same-origin'
                 });
+
                 console.log(`Response status: ${response.status}, OK: ${response.ok}`);
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({}));
                     throw new Error(errorData.error || `HTTP error: ${response.status}`);
                 }
+
                 const data = await response.json();
                 console.log('Received reservations:', data);
                 reservationsData = data;
@@ -295,10 +323,10 @@
             } catch (error) {
                 console.error('Fetch error:', error.message, error.stack);
                 showMessage(
-                    'Cannot connect to the server at https://five-cuts.vercel.app. Please check the console for details.',
+                    `Failed to load reservations: ${error.message}. Check the console for details.`,
                     'error'
                 );
-                reservationsList.innerHTML = '<p>Failed to load reservations. Please check the server and refresh the page.</p>';
+                reservationsList.innerHTML = '<p>Failed to load reservations. Please try again later.</p>';
             }
         }
 
@@ -349,7 +377,7 @@
                 const quantityLabel = item.querySelector('.quantity-label');
                 const items = Array.isArray(reservation.items) ? reservation.items : JSON.parse(reservation.items || '[]');
                 const quantityMatch = items.find(i => i && i.includes(itemName));
-                const quantity = quantityMatch ? parseInt(quantityMatch.match(/x(\d+)/)?.[1] || 1) : 0;
+                const quantity = quantityMatch ? parseInt(quantityMatch.match(/x(\d+)/)?.[1] || 0) : 0;
 
                 slider.value = quantity;
                 quantityLabel.textContent = `Quantity: ${quantity}`;
@@ -437,7 +465,10 @@
                 const reservation = reservationsData.find(r => r.table_code === currentEditTableCode);
                 const response = await fetch('https://five-cuts.vercel.app/update', {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify({
                         tableCode: currentEditTableCode,
                         tableNumber: reservation.table_number,
@@ -445,7 +476,8 @@
                         phoneNumber,
                         reservationTime: reservation.reservation_time,
                         items: itemsWithQuantities
-                    })
+                    }),
+                    mode: 'cors'
                 });
                 console.log(`Update response status: ${response.status}`);
                 if (!response.ok) {
@@ -466,7 +498,7 @@
                 displayReservations();
             } catch (error) {
                 console.error('Update error:', error.message, error.stack);
-                showMessage('Unable to update reservation. Please try again.', 'error');
+                showMessage(`Unable to update reservation: ${error.message}`, 'error');
             }
         }
 
@@ -488,8 +520,12 @@
                 console.log('Sending cancel request for table code:', pendingCancelCode);
                 const response = await fetch('https://five-cuts.vercel.app/cancel', {
                     method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tableCode: pendingCancelCode })
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ tableCode: pendingCancelCode }),
+                    mode: 'cors'
                 });
                 console.log(`Cancel response status: ${response.status}`);
                 if (!response.ok) {
@@ -504,7 +540,7 @@
                 displayReservations();
             } catch (error) {
                 console.error('Cancel error:', error.message, error.stack);
-                showMessage('Unable to cancel reservation. Please try again.', 'error');
+                showMessage(`Unable to cancel reservation: ${error.message}`, 'error');
             }
             pendingCancelCode = null;
         }

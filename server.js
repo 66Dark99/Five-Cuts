@@ -1,45 +1,47 @@
 const express = require('express');
 const path = require('path');
-
-
-// لخدمة الملفات الثابتة من الجذر مباشرة
-app.use(express.static(__dirname));
-const sqlite3 = require('sqlite3').verbose();
+const { Pool } = require('pg');
 const cors = require('cors');
 const crypto = require('crypto');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // إعدادات الخادم
+app.use(express.static(__dirname));
 app.use(express.json());
 app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
 
-// كود الأدمن (يُفضل استخدام متغير بيئي في الإنتاج)
+// كود الأدمن
 const ADMIN_CODE = 'admin123';
 
-// إعداد قاعدة البيانات
-const db = new sqlite3.Database('./reservations.db', (err) => {
+// إعداد قاعدة بيانات PostgreSQL
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+});
+
+pool.connect((err) => {
     if (err) {
-        console.error('Failed to connect to SQLite database:', err.message);
+        console.error('Failed to connect to PostgreSQL database:', err.message);
         process.exit(1);
     }
-    console.log('Connected to SQLite database.');
+    console.log('Connected to PostgreSQL database.');
 
     // إنشاء جدول الحجوزات
-    db.run(`
+    pool.query(`
         CREATE TABLE IF NOT EXISTS reservations (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            table_number TEXT NOT NULL,
-            username TEXT NOT NULL,
-            phone_number TEXT NOT NULL,
+            id SERIAL PRIMARY KEY,
+            table_number VARCHAR(50) NOT NULL,
+            username VARCHAR(100) NOT NULL,
+            phone_number VARCHAR(20) NOT NULL,
             item1 TEXT,
             item2 TEXT,
             item3 TEXT,
             item4 TEXT,
             item5 TEXT,
-            reservation_date TEXT DEFAULT (datetime('now')),
-            table_code TEXT UNIQUE
+            reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            table_code VARCHAR(50) UNIQUE
         )
     `, (err) => {
         if (err) {
@@ -48,8 +50,8 @@ const db = new sqlite3.Database('./reservations.db', (err) => {
             console.log('Reservations table ready.');
         }
 
-        // إنشاء فهرس لتحسين البحث باستخدام table_code
-        db.run('CREATE INDEX IF NOT EXISTS idx_table_code ON reservations (table_code)', (err) => {
+        // إنشاء فهرس لتحسين البحث
+        pool.query('CREATE INDEX IF NOT EXISTS idx_table_code ON reservations (table_code)', (err) => {
             if (err) {
                 console.error('Error creating index on table_code:', err.message);
             } else {
@@ -63,7 +65,6 @@ const db = new sqlite3.Database('./reservations.db', (err) => {
 app.post('/reserve', async (req, res) => {
     const { tableNumber, username, phoneNumber, items } = req.body;
 
-    // التحقق من البيانات المطلوبة
     if (!tableNumber || !username || !phoneNumber) {
         console.log('Missing required fields:', { tableNumber, username, phoneNumber });
         return res.status(400).json({ error: 'Table number, username, and phone number are required.' });
@@ -73,23 +74,16 @@ app.post('/reserve', async (req, res) => {
     console.log('Processing reservation:', { tableNumber, username, phoneNumber, items });
 
     try {
-        // التحقق من توفر الطاولة
-        const existingReservation = await new Promise((resolve, reject) => {
-            db.get('SELECT id FROM reservations WHERE table_number = ?', [tableNumber], (err, row) => {
-                if (err) reject(err);
-                resolve(row);
-            });
-        });
-
-        if (existingReservation) {
+        const existingReservation = await pool.query('SELECT id FROM reservations WHERE table_number = $1', [tableNumber]);
+        if (existingReservation.rows.length > 0) {
             console.log('Table already reserved:', tableNumber);
             return res.status(400).json({ error: 'This table is already reserved.' });
         }
 
-        // إدراج الحجز
         const sql = `
             INSERT INTO reservations (table_number, username, phone_number, item1, item2, item3, item4, item5, table_code)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+            RETURNING *
         `;
         const params = [
             tableNumber,
@@ -103,13 +97,7 @@ app.post('/reserve', async (req, res) => {
             tableCode
         ];
 
-        await new Promise((resolve, reject) => {
-            db.run(sql, params, function (err) {
-                if (err) reject(err);
-                resolve();
-            });
-        });
-
+        const result = await pool.query(sql, params);
         console.log('Reservation created:', { tableCode });
         res.status(201).json({ message: 'Reservation created successfully', tableCode });
     } catch (error) {
@@ -124,23 +112,17 @@ app.get('/orders', async (req, res) => {
     console.log('Fetching orders:', { tableCode });
 
     try {
-        const sql = tableCode ? 'SELECT * FROM reservations WHERE table_code = ?' : 'SELECT * FROM reservations';
+        const sql = tableCode ? 'SELECT * FROM reservations WHERE table_code = $1' : 'SELECT * FROM reservations';
         const params = tableCode ? [tableCode.trim()] : [];
+        const result = await pool.query(sql, params);
 
-        const rows = await new Promise((resolve, reject) => {
-            db.all(sql, params, (err, rows) => {
-                if (err) reject(err);
-                resolve(rows);
-            });
-        });
-
-        if (tableCode && rows.length === 0) {
+        if (tableCode && result.rows.length === 0) {
             console.log('No reservation found for tableCode:', tableCode);
             return res.status(404).json({ error: 'No reservation found for this table code.' });
         }
 
-        console.log('Orders retrieved:', rows.length);
-        res.status(200).json(rows);
+        console.log('Orders retrieved:', result.rows.length);
+        res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error fetching orders:', error.message);
         res.status(500).json({ error: 'Failed to fetch orders: ' + error.message });
@@ -160,8 +142,9 @@ app.put('/update', async (req, res) => {
     try {
         const sql = `
             UPDATE reservations 
-            SET item1 = ?, item2 = ?, item3 = ?, item4 = ?, item5 = ?
-            WHERE table_code = ?
+            SET item1 = $1, item2 = $2, item3 = $3, item4 = $4, item5 = $5
+            WHERE table_code = $6
+            RETURNING *
         `;
         const params = [
             items?.[0] || null,
@@ -172,35 +155,16 @@ app.put('/update', async (req, res) => {
             tableCode.trim()
         ];
 
-        const result = await new Promise((resolve, reject) => {
-            db.run(sql, params, function (err) {
-                if (err) reject(err);
-                resolve(this.changes);
-            });
-        });
-
-        if (result === 0) {
+        const result = await pool.query(sql, params);
+        if (result.rowCount === 0) {
             console.log('No reservation found for update:', tableCode);
             return res.status(404).json({ error: 'Invalid table code or no reservation found.' });
         }
 
-        // جلب البيانات المحدثة
-        const updatedReservation = await new Promise((resolve, reject) => {
-            db.get('SELECT * FROM reservations WHERE table_code = ?', [tableCode.trim()], (err, row) => {
-                if (err) reject(err);
-                resolve(row);
-            });
-        });
-
-        if (!updatedReservation) {
-            console.log('Failed to retrieve updated reservation:', tableCode);
-            return res.status(500).json({ error: 'Failed to retrieve updated reservation.' });
-        }
-
-        console.log('Reservation updated:', updatedReservation);
+        console.log('Reservation updated:', result.rows[0]);
         res.status(200).json({
             message: 'Reservation updated successfully',
-            reservation: updatedReservation
+            reservation: result.rows[0]
         });
     } catch (error) {
         console.error('Error updating reservation:', error.message);
@@ -219,14 +183,8 @@ app.delete('/cancel', async (req, res) => {
     }
 
     try {
-        const result = await new Promise((resolve, reject) => {
-            db.run('DELETE FROM reservations WHERE table_code = ?', [tableCode.trim()], function (err) {
-                if (err) reject(err);
-                resolve(this.changes);
-            });
-        });
-
-        if (result === 0) {
+        const result = await pool.query('DELETE FROM reservations WHERE table_code = $1', [tableCode.trim()]);
+        if (result.rowCount === 0) {
             console.log('No reservation found for cancellation:', tableCode);
             return res.status(404).json({ error: 'Invalid table code or no reservation found.' });
         }
@@ -250,15 +208,9 @@ app.post('/admin/reservations', async (req, res) => {
     }
 
     try {
-        const rows = await new Promise((resolve, reject) => {
-            db.all('SELECT * FROM reservations', [], (err, rows) => {
-                if (err) reject(err);
-                resolve(rows);
-            });
-        });
-
-        console.log('Admin reservations retrieved:', rows.length);
-        res.status(200).json(rows);
+        const result = await pool.query('SELECT * FROM reservations');
+        console.log('Admin reservations retrieved:', result.rows.length);
+        res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error fetching admin reservations:', error.message);
         res.status(500).json({ error: 'Failed to fetch reservations: ' + error.message });
@@ -268,33 +220,23 @@ app.post('/admin/reservations', async (req, res) => {
 // نقطة نهاية: تصحيح (للاختبار)
 app.get('/debug/reservations', async (req, res) => {
     try {
-        const rows = await new Promise((resolve, reject) => {
-            db.all('SELECT * FROM reservations', [], (err, rows) => {
-                if (err) reject(err);
-                resolve(rows);
-            });
-        });
-
-        console.log('Debug reservations:', rows.length);
-        res.status(200).json(rows);
+        const result = await pool.query('SELECT * FROM reservations');
+        console.log('Debug reservations:', result.rows.length);
+        res.status(200).json(result.rows);
     } catch (error) {
         console.error('Debug error:', error.message);
         res.status(500).json({ error: 'Failed to fetch debug data: ' + error.message });
     }
 });
 
-// إغلاق قاعدة البيانات عند إيقاف الخادم
-process.on('SIGINT', () => {
-    db.close((err) => {
-        if (err) {
-            console.error('Error closing database:', err.message);
-        }
-        console.log('Database connection closed.');
-        process.exit(0);
-    });
+// إغلاق اتصال قاعدة البيانات عند إيقاف الخادم
+process.on('SIGINT', async () => {
+    await pool.end();
+    console.log('Database connection closed.');
+    process.exit(0);
 });
 
 // تشغيل الخادم
 app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
+    console.log(`Server is running on port ${port}`);
 });

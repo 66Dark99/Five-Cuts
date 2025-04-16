@@ -7,7 +7,7 @@ const express = require('express');
 
        app.use(express.static(__dirname));
        app.use(express.json());
-       app.use(cors({ origin: 'https://five-cuts.vercel.app', methods: ['GET', 'POST'] }));
+       app.use(cors({ origin: 'https://five-cuts.vercel.app', methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
 
        const pool = new Pool({
            connectionString: process.env.DATABASE_URL,
@@ -26,6 +26,8 @@ const express = require('express');
                    table_number VARCHAR(50) NOT NULL,
                    username VARCHAR(100) NOT NULL,
                    phone_number VARCHAR(20) NOT NULL,
+                   reservation_time TIMESTAMP NOT NULL,
+                   items JSONB,
                    reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                )
            `, (err) => {
@@ -56,10 +58,10 @@ const express = require('express');
        });
 
        app.post('/create-reservation', async (req, res) => {
-           const { tableNumber, username, phoneNumber } = req.body;
+           const { tableNumber, username, phoneNumber, reservationTime, items } = req.body;
            console.log('Received /create-reservation:', req.body);
-           if (!tableNumber || !username || !phoneNumber) {
-               return res.status(400).json({ error: 'Table number, username, and phone number are required.' });
+           if (!tableNumber || !username || !phoneNumber || !reservationTime || !items) {
+               return res.status(400).json({ error: 'Table number, username, phone number, reservation time, and items are required.' });
            }
            try {
                const result = await pool.query('SELECT id FROM reservations WHERE table_number = $1', [tableNumber]);
@@ -67,8 +69,8 @@ const express = require('express');
                    return res.status(400).json({ error: 'This table is already reserved.' });
                }
                await pool.query(
-                   'INSERT INTO reservations (table_number, username, phone_number) VALUES ($1, $2, $3)',
-                   [tableNumber, username, phoneNumber]
+                   'INSERT INTO reservations (table_number, username, phone_number, reservation_time, items) VALUES ($1, $2, $3, $4, $5)',
+                   [tableNumber, username, phoneNumber, reservationTime, JSON.stringify(items)]
                );
                res.status(201).json({ message: 'Reservation created successfully.' });
            } catch (error) {

@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Five Cuts - Menu</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
-    <!-- تم تعليق styles.css لاستبعاد أي تأثير محتمل. أزل التعليق إذا لزم الأمر -->
-    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             margin: 0;
@@ -161,7 +160,7 @@
                 text-align: center;
                 opacity: 0;
                 transform: translateY(-20px);
-                transition: opacity 0.3s ease, transform 0.3s ease;
+                transition: opacity 0.5s ease, transform 0.5s ease;
             }
             .nav-links.active {
                 display: flex;
@@ -215,7 +214,7 @@
 
     <div class="menu-container">
         <div class="menu-item">
-            <img src="ribeye steak.png" alt="Ribeye Steak" onerror="console.error('Failed to load Ribeye Steak image'); this.src='https://via.placeholder.com/250x150?text=Ribeye+Steak'">
+            <img src="ribeye steak.jpeg" alt="Ribeye Steak">
             <div class="item-details">
                 <h2>Ribeye Steak</h2>
                 <span class="price">$35</span>
@@ -232,7 +231,7 @@
         </div>
 
         <div class="menu-item">
-            <img src="filet mignon.jpeg" alt="Filet Mignon" onerror="console.error('Failed to load Filet Mignon image'); this.src='https://via.placeholder.com/250x150?text=Filet+Mignon'">
+            <img src="filet mignon.jpeg" alt="Filet Mignon">
             <div class="item-details">
                 <h2>Filet Mignon</h2>
                 <span class="price">$40</span>
@@ -249,7 +248,7 @@
         </div>
 
         <div class="menu-item">
-            <img src="t-bone.jpeg" alt="T-Bone" onerror="console.error('Failed to load T-Bone image'); this.src='https://via.placeholder.com/250x150?text=T-Bone'">
+            <img src="t-bone.jpeg" alt="T-Bone">
             <div class="item-details">
                 <h2>T-Bone</h2>
                 <span class="price">$45</span>
@@ -265,7 +264,7 @@
         </div>
 
         <div class="menu-item">
-            <img src="wagyu.jpeg" alt="Wagyu" onerror="console.error('Failed to load Wagyu image'); this.src='https://via.placeholder.com/250x150?text=Wagyu'">
+            <img src="wagyu.png" alt="Wagyu">
             <div class="item-details">
                 <h2>Wagyu</h2>
                 <span class="price">$60</span>
@@ -282,7 +281,7 @@
         </div>
 
         <div class="menu-item">
-            <img src="smoked brisket.jpeg" alt="Smoked Brisket" onerror="console.error('Failed to load Smoked Brisket image'); this.src='https://via.placeholder.com/250x150?text=Smoked+Brisket'">
+            <img src="smoked brisket.jpeg" alt="Smoked Brisket">
             <div class="item-details">
                 <h2>Smoked Brisket</h2>
                 <span class="price">$30</span>
@@ -328,19 +327,6 @@
             ingredients.classList.remove('active');
             button.style.display = 'block';
         }
-
-        // التحقق من تحميل الصور
-        document.addEventListener('DOMContentLoaded', () => {
-            const images = document.querySelectorAll('.menu-item img');
-            images.forEach(img => {
-                img.addEventListener('error', () => {
-                    console.error(`Failed to load image: ${img.src}`);
-                });
-                img.addEventListener('load', () => {
-                    console.log(`Successfully loaded image: ${img.src}`);
-                });
-            });
-        });
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92d79b00ea2db0d6',t:'MTc0NDE3NjU1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

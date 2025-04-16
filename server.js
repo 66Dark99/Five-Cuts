@@ -10,7 +10,7 @@ const port = process.env.PORT || 3000;
 // إعدادات الخادم
 app.use(express.static(__dirname));
 app.use(express.json());
-app.use(cors({ origin: '*', methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
+app.use(cors({ origin: 'https://five-cuts.vercel.app', methods: ['GET', 'POST', 'PUT', 'DELETE'] }));
 
 // كود الأدمن
 const ADMIN_CODE = 'admin123';
@@ -61,8 +61,34 @@ pool.connect((err) => {
     });
 });
 
-// نقطة نهاية: إنشاء حجز جديد
+// نقطة نهاية: التحقق من توفر الطاولة
 app.post('/reserve', async (req, res) => {
+    const { tableNumber } = req.body;
+
+    if (!tableNumber) {
+        console.log('Missing tableNumber:', req.body);
+        return res.status(400).json({ error: 'Table number is required.' });
+    }
+
+    console.log('Checking table availability:', { tableNumber });
+
+    try {
+        const existingReservation = await pool.query('SELECT id FROM reservations WHERE table_number = $1', [tableNumber]);
+        if (existingReservation.rows.length > 0) {
+            console.log('Table already reserved:', tableNumber);
+            return res.status(400).json({ error: 'This table is already reserved.' });
+        }
+
+        console.log('Table is available:', tableNumber);
+        res.status(200).json({ message: 'Table is available.' });
+    } catch (error) {
+        console.error('Error checking table availability:', error.message);
+        res.status(500).json({ error: 'Failed to check table availability: ' + error.message });
+    }
+});
+
+// نقطة نهاية: إنشاء حجز جديد
+app.post('/create-reservation', async (req, res) => {
     const { tableNumber, username, phoneNumber, items } = req.body;
 
     if (!tableNumber || !username || !phoneNumber) {

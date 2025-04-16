@@ -26,7 +26,6 @@ pool.connect((err) => {
             table_number VARCHAR(50) NOT NULL,
             username VARCHAR(100) NOT NULL,
             phone_number VARCHAR(20) NOT NULL,
-            items JSONB,
             reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     `, (err) => {
@@ -54,6 +53,28 @@ pool.connect((err) => {
                     console.error('Error adding reservation_time column:', err.message);
                 } else {
                     console.log('reservation_time column checked/added.');
+                }
+            });
+            // إضافة عمود items إذا لم يكن موجودًا
+            pool.query(`
+                DO $$
+                BEGIN
+                    IF NOT EXISTS (
+                        SELECT 1
+                        FROM information_schema.columns
+                        WHERE table_name = 'reservations'
+                        AND column_name = 'items'
+                    ) THEN
+                        ALTER TABLE reservations
+                        ADD COLUMN items JSONB;
+                    END IF;
+                END
+                $$;
+            `, (err) => {
+                if (err) {
+                    console.error('Error adding items column:', err.message);
+                } else {
+                    console.log('items column checked/added.');
                 }
             });
         }
@@ -104,7 +125,6 @@ app.get('/orders', async (req, res) => {
     const { tableCode } = req.query;
     console.log('Received /orders:', { tableCode });
     try {
-        // نستخدم table_number مؤقتًا بدلاً من tableCode
         const result = await pool.query('SELECT * FROM reservations WHERE table_number = $1', [tableCode]);
         res.status(200).json(result.rows);
     } catch (error) {

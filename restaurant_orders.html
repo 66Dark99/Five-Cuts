@@ -1,542 +1,559 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Five Cuts - Restaurant Orders</title>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" as="style" onload="this.rel='stylesheet'">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Cinzel', serif;
-            background: #1C2526;
-            color: #F5F5DC;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .navbar {
-            background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            box-sizing: border-box;
-        }
-        .logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-            object-fit: cover;
-        }
-        .logo:hover {
-            transform: scale(1.1);
-        }
-        .nav-links {
-            display: flex;
-            list-style: none;
-            margin: 0 auto;
-            padding: 0;
-        }
-        .nav-links li {
-            margin: 0 30px;
-        }
-        .nav-links a {
-            color: #F5F5DC;
-            text-decoration: none;
-            font-size: 18px;
-            transition: color 0.3s ease;
-        }
-        .nav-links a:hover {
-            color: #B8860B;
-        }
-        .burger {
-            display: none;
-            font-size: 24px;
-            color: #B8860B;
-            cursor: pointer;
-            margin-right: 20px;
-        }
-        h1 {
-            text-align: center;
-            margin: 80px 0 20px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            font-size: 2em;
-        }
-        .control-panel {
-            margin-bottom: 20px;
-            text-align: center;
-            background: rgba(28, 37, 38, 0.9);
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #B8860B;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 400px;
-        }
-        .control-panel input[type="text"] {
-            padding: 10px;
-            width: 200px;
-            background: #F5F5DC;
-            border: none;
-            border-radius: 5px;
-            font-family: 'Cinzel', serif;
-        }
-        .control-panel button {
-            padding: 10px 20px;
-            background-color: #B8860B;
-            color: #1C2526;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: 'Cinzel', serif;
-            margin-left: 10px;
-        }
-        .control-panel button:hover {
-            background-color: #D4A017;
-        }
-        .order-form {
-            display: none;
-            background: rgba(28, 37, 38, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 400px;
-            border: 1px solid #B8860B;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .order-form.active {
-            display: flex;
-        }
-        .order-form h3 {
-            color: #F5F5DC;
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-        }
-        .order-form input[type="text"],
-        .order-form input[type="datetime-local"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            background: rgba(42, 51, 52, 0.9);
-            border: 1px solid #B8860B;
-            border-radius: 5px;
-            color: #F5F5DC;
-            font-family: 'Cinzel', serif;
-        }
-        .order-form input[type="datetime-local"] {
-            appearance: none;
-            -webkit-appearance: none;
-        }
-        .order-form input[type="text"]::placeholder,
-        .order-form input[type="datetime-local"]::placeholder {
-            color: #B8860B;
-            opacity: 0.7;
-        }
-        .order-form .menu-item {
-            background: rgba(42, 51, 52, 0.9);
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            border: 1px solid #B8860B;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            width: 100%;
-        }
-        .order-form .menu-item.selected {
-            background: rgba(72, 91, 92, 0.9);
-        }
-        .order-form .menu-item h4 {
-            color: #F5F5DC;
-            font-size: 16px;
-            margin: 0;
-            padding: 5px 0;
-        }
-        .order-form .menu-item .slider-container {
-            display: none;
-            margin-top: 10px;
-        }
-        .order-form .menu-item.selected .slider-container {
-            display: block;
-        }
-        .order-form .menu-item input[type="range"] {
-            width: 100%;
-            background: linear-gradient(to right, #B8860B 0%, #B8860B var(--value), #4A3F2B var(--value), #4A3F2B 100%);
-            -webkit-appearance: none;
-            appearance: none;
-            height: 8px;
-            border-radius: 5px;
-            outline: none;
-            transition: background 0.1s ease;
-        }
-        .order-form .menu-item input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #F5F5DC;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        }
-        .order-form .menu-item input[type="range"]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            background: #F5F5DC;
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-            border: none;
-        }
-        .order-form .menu-item .quantity-label {
-            color: #F5F5DC;
-            font-size: 14px;
-            text-align: center;
-            margin-top: 5px;
-        }
-        .order-form button {
-            padding: 10px 20px;
-            background-color: #B8860B;
-            color: #1C2526;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: 'Cinzel', serif;
-            margin: 5px 0;
-            width: 100%;
-        }
-        .order-form button:hover {
-            background-color: #D4A017;
-        }
-        @media (max-width: 768px) {
-            .burger {
-                display: block;
-            }
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 60px;
-                left: 0;
-                background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
-                width: 100%;
-                text-align: center;
-                opacity: 0;
-                transform: translateY(-20px);
-                transition: opacity 0.5s ease, transform 0.5s ease;
-            }
-            .nav-links.active {
-                display: flex;
-                opacity: 1;
-                transform: translateY(0);
-            }
-            .nav-links li {
-                margin: 10px 0;
-            }
-            h1 {
-                font-size: 1.5em;
-            }
-            .control-panel {
-                padding: 10px;
-            }
-            .order-form {
-                padding: 15px;
-            }
-            .order-form h3 {
-                font-size: 1.5em;
-            }
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar">
-        <img src="logo.png" alt="Five Cuts Logo" class="logo">
-        <ul class="nav-links" id="navLinks">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="menu.html">Menu</a></li>
-            <li><a href="tables.html">Tables</a></li>
-            <li><a href="chefs.html">Chefs</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="restaurant_orders.html">Orders</a></li>
-        </ul>
-        <div class="burger" id="burger" onclick="toggleMenu()">☰</div>
-    </nav>
+       <html lang="en">
+       <head>
+           <meta charset="UTF-8">
+           <meta name="viewport" content="width=device-width, initial-scale=1.0">
+           <title>Five Cuts - Restaurant Orders</title>
+           <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" as="style" onload="this.rel='stylesheet'">
+           <style>
+               body {
+                   margin: 0;
+                   padding: 0;
+                   font-family: 'Cinzel', serif;
+                   background: #1C2526;
+                   color: #F5F5DC;
+                   min-height: 100vh;
+                   display: flex;
+                   flex-direction: column;
+                   align-items: center;
+               }
+               .navbar {
+                   background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
+                   padding: 10px 20px;
+                   display: flex;
+                   justify-content: space-between;
+                   align-items: center;
+                   position: fixed;
+                   width: 100%;
+                   top: 0;
+                   z-index: 1000;
+                   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+                   box-sizing: border-box;
+               }
+               .logo {
+                   width: 50px;
+                   height: 50px;
+                   border-radius: 50%;
+                   transition: transform 0.3s ease;
+                   object-fit: cover;
+               }
+               .logo:hover {
+                   transform: scale(1.1);
+               }
+               .nav-links {
+                   display: flex;
+                   list-style: none;
+                   margin: 0 auto;
+                   padding: 0;
+               }
+               .nav-links li {
+                   margin: 0 30px;
+               }
+               .nav-links a {
+                   color: #F5F5DC;
+                   text-decoration: none;
+                   font-size: 18px;
+                   transition: color 0.3s ease;
+               }
+               .nav-links a:hover {
+                   color: #B8860B;
+               }
+               .burger {
+                   display: none;
+                   font-size: 24px;
+                   color: #B8860B;
+                   cursor: pointer;
+                   margin-right: 20px;
+               }
+               h1 {
+                   text-align: center;
+                   margin: 80px 0 20px;
+                   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+                   font-size: 2em;
+               }
+               .control-panel {
+                   margin-bottom: 20px;
+                   text-align: center;
+                   background: rgba(28, 37, 38, 0.9);
+                   padding: 15px;
+                   border-radius: 10px;
+                   border: 1px solid #B8860B;
+                   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+                   width: 100%;
+                   max-width: 400px;
+               }
+               .control-panel input[type="text"] {
+                   padding: 10px;
+                   width: 200px;
+                   background: #F5F5DC;
+                   border: none;
+                   border-radius: 5px;
+                   font-family: 'Cinzel', serif;
+               }
+               .control-panel button {
+                   padding: 10px 20px;
+                   background-color: #B8860B;
+                   color: #1C2526;
+                   border: none;
+                   border-radius: 5px;
+                   cursor: pointer;
+                   font-family: 'Cinzel', serif;
+                   margin-left: 10px;
+               }
+               .control-panel button:hover {
+                   background-color: #D4A017;
+               }
+               .error-message {
+                   color: #F5F5DC;
+                   background: rgba(184, 134, 11, 0.3);
+                   padding: 10px;
+                   border-radius: 5px;
+                   margin-bottom: 15px;
+                   display: none;
+                   text-align: center;
+                   width: 100%;
+               }
+               .order-form {
+                   display: none;
+                   background: rgba(28, 37, 38, 0.9);
+                   padding: 20px;
+                   border-radius: 10px;
+                   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+                   width: 100%;
+                   max-width: 400px;
+                   border: 1px solid #B8860B;
+                   flex-direction: column;
+                   align-items: center;
+                   margin-bottom: 20px;
+               }
+               .order-form.active {
+                   display: flex;
+               }
+               .order-form h3 {
+                   color: #F5F5DC;
+                   text-align: center;
+                   margin-bottom: 20px;
+                   font-size: 1.8em;
+               }
+               .order-form input[type="text"],
+               .order-form input[type="datetime-local"] {
+                   width: 100%;
+                   padding: 10px;
+                   margin-bottom: 15px;
+                   background: rgba(42, 51, 52, 0.9);
+                   border: 1px solid #B8860B;
+                   border-radius: 5px;
+                   color: #F5F5DC;
+                   font-family: 'Cinzel', serif;
+               }
+               .order-form input[type="datetime-local"] {
+                   appearance: none;
+                   -webkit-appearance: none;
+               }
+               .order-form input[type="text"]::placeholder,
+               .order-form input[type="datetime-local"]::placeholder {
+                   color: #B8860B;
+                   opacity: 0.7;
+               }
+               .order-form .menu-item {
+                   background: rgba(42, 51, 52, 0.9);
+                   padding: 10px;
+                   margin-bottom: 10px;
+                   border-radius: 5px;
+                   border: 1px solid #B8860B;
+                   cursor: pointer;
+                   transition: background 0.3s ease;
+                   width: 100%;
+               }
+               .order-form .menu-item.selected {
+                   background: rgba(72, 91, 92, 0.9);
+               }
+               .order-form .menu-item h4 {
+                   color: #F5F5DC;
+                   font-size: 16px;
+                   margin: 0;
+                   padding: 5px 0;
+               }
+               .order-form .menu-item .slider-container {
+                   display: none;
+                   margin-top: 10px;
+               }
+               .order-form .menu-item.selected .slider-container {
+                   display: block;
+               }
+               .order-form .menu-item input[type="range"] {
+                   width: 100%;
+                   background: linear-gradient(to right, #B8860B 0%, #B8860B var(--value), #4A3F2B var(--value), #4A3F2B 100%);
+                   -webkit-appearance: none;
+                   appearance: none;
+                   height: 8px;
+                   border-radius: 5px;
+                   outline: none;
+                   transition: background 0.1s ease;
+               }
+               .order-form .menu-item input[type="range"]::-webkit-slider-thumb {
+                   -webkit-appearance: none;
+                   width: 20px;
+                   height: 20px;
+                   background: #F5F5DC;
+                   border-radius: 50%;
+                   cursor: pointer;
+                   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+               }
+               .order-form .menu-item input[type="range"]::-moz-range-thumb {
+                   width: 20px;
+                   height: 20px;
+                   background: #F5F5DC;
+                   border-radius: 50%;
+                   cursor: pointer;
+                   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+                   border: none;
+               }
+               .order-form .menu-item .quantity-label {
+                   color: #F5F5DC;
+                   font-size: 14px;
+                   text-align: center;
+                   margin-top: 5px;
+               }
+               .order-form button {
+                   padding: 10px 20px;
+                   background-color: #B8860B;
+                   color: #1C2526;
+                   border: none;
+                   border-radius: 5px;
+                   cursor: pointer;
+                   font-family: 'Cinzel', serif;
+                   margin: 5px 0;
+                   width: 100%;
+               }
+               .order-form button:hover {
+                   background-color: #D4A017;
+               }
+               @media (max-width: 768px) {
+                   .burger {
+                       display: block;
+                   }
+                   .nav-links {
+                       display: none;
+                       flex-direction: column;
+                       position: absolute;
+                       top: 60px;
+                       left: 0;
+                       background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
+                       width: 100%;
+                       text-align: center;
+                       opacity: 0;
+                       transform: translateY(-20px);
+                       transition: opacity 0.5s ease, transform 0.5s ease;
+                   }
+                   .nav-links.active {
+                       display: flex;
+                       opacity: 1;
+                       transform: translateY(0);
+                   }
+                   .nav-links li {
+                       margin: 10px 0;
+                   }
+                   h1 {
+                       font-size: 1.5em;
+                   }
+                   .control-panel {
+                       padding: 10px;
+                   }
+                   .order-form {
+                       padding: 15px;
+                   }
+                   .order-form h3 {
+                       font-size: 1.5em;
+                   }
+               }
+           </style>
+       </head>
+       <body>
+           <nav class="navbar">
+               <img src="/logo.png" alt="Five Cuts Logo" class="logo">
+               <ul class="nav-links" id="navLinks">
+                   <li><a href="/index.html">Home</a></li>
+                   <li><a href="/menu.html">Menu</a></li>
+                   <li><a href="/tables.html">Tables</a></li>
+                   <li><a href="/chefs.html">Chefs</a></li>
+                   <li><a href="/contact.html">Contact</a></li>
+                   <li><a href="/restaurant_orders.html">Orders</a></li>
+               </ul>
+               <div class="burger" id="burger" onclick="toggleMenu()">☰</div>
+           </nav>
 
-    <h1>Restaurant Orders</h1>
-    <div class="control-panel">
-        <input type="text" id="tableCodeInput" placeholder="Enter Table Code">
-        <button onclick="loadOrder()">Load Order</button>
-    </div>
-    <div class="order-form" id="orderForm">
-        <h3>Manage Reservation</h3>
-        <input type="text" id="tableNumber" placeholder="Table Number" readonly>
-        <input type="text" id="username" placeholder="Your Name">
-        <input type="text" id="phone" placeholder="Phone Number">
-        <input type="datetime-local" id="reservationTime" placeholder="Reservation Date & Time">
-        <div class="menu-item" data-item="Ribeye Steak">
-            <h4>Ribeye Steak</h4>
-            <div class="slider-container">
-                <input type="range" name="quantity" min="0" max="10" value="0">
-                <div class="quantity-label">Quantity: 0</div>
-            </div>
-        </div>
-        <div class="menu-item" data-item="Filet Mignon">
-            <h4>Filet Mignon</h4>
-            <div class="slider-container">
-                <input type="range" name="quantity" min="0" max="10" value="0">
-                <div class="quantity-label">Quantity: 0</div>
-            </div>
-        </div>
-        <div class="menu-item" data-item="T-Bone">
-            <h4>T-Bone</h4>
-            <div class="slider-container">
-                <input type="range" name="quantity" min="0" max="10" value="0">
-                <div class="quantity-label">Quantity: 0</div>
-            </div>
-        </div>
-        <div class="menu-item" data-item="Wagyu">
-            <h4>Wagyu</h4>
-            <div class="slider-container">
-                <input type="range" name="quantity" min="0" max="10" value="0">
-                <div class="quantity-label">Quantity: 0</div>
-            </div>
-        </div>
-        <div class="menu-item" data-item="Smoked Brisket">
-            <h4>Smoked Brisket</h4>
-            <div class="slider-container">
-                <input type="range" name="quantity" min="0" max="10" value="0">
-                <div class="quantity-label">Quantity: 0</div>
-            </div>
-        </div>
-        <button onclick="updateOrder()">Update Reservation</button>
-        <button onclick="cancelReservation()">Cancel Reservation</button>
-    </div>
+           <h1>Restaurant Orders</h1>
+           <div class="control-panel">
+               <div id="error-message" class="error-message"></div>
+               <input type="text" id="tableCodeInput" placeholder="Enter Table Code">
+               <button onclick="loadOrder()">Load Order</button>
+           </div>
+           <div class="order-form" id="orderForm">
+               <h3>Manage Reservation</h3>
+               <input type="text" id="tableNumber" placeholder="Table Number" readonly>
+               <input type="text" id="username" placeholder="Your Name">
+               <input type="text" id="phone" placeholder="Phone Number">
+               <input type="datetime-local" id="reservationTime" placeholder="Reservation Date & Time">
+               <div class="menu-item" data-item="Ribeye Steak">
+                   <h4>Ribeye Steak</h4>
+                   <div class="slider-container">
+                       <input type="range" name="quantity" min="0" max="10" value="0">
+                       <div class="quantity-label">Quantity: 0</div>
+                   </div>
+               </div>
+               <div class="menu-item" data-item="Filet Mignon">
+                   <h4>Filet Mignon</h4>
+                   <div class="slider-container">
+                       <input type="range" name="quantity" min="0" max="10" value="0">
+                       <div class="quantity-label">Quantity: 0</div>
+                   </div>
+               </div>
+               <div class="menu-item" data-item="T-Bone">
+                   <h4>T-Bone</h4>
+                   <div class="slider-container">
+                       <input type="range" name="quantity" min="0" max="10" value="0">
+                       <div class="quantity-label">Quantity: 0</div>
+                   </div>
+               </div>
+               <div class="menu-item" data-item="Wagyu">
+                   <h4>Wagyu</h4>
+                   <div class="slider-container">
+                       <input type="range" name="quantity" min="0" max="10" value="0">
+                       <div class="quantity-label">Quantity: 0</div>
+                   </div>
+               </div>
+               <div class="menu-item" data-item="Smoked Brisket">
+                   <h4>Smoked Brisket</h4>
+                   <div class="slider-container">
+                       <input type="range" name="quantity" min="0" max="10" value="0">
+                       <div class="quantity-label">Quantity: 0</div>
+                   </div>
+               </div>
+               <button onclick="updateOrder()">Update Reservation</button>
+               <button onclick="cancelReservation()">Cancel Reservation</button>
+           </div>
 
-    <script>
-        let currentTableCode = null;
+           <script>
+               let currentTableCode = null;
+               const errorMessage = document.getElementById('error-message');
 
-        async function loadOrder() {
-            const tableCode = document.getElementById('tableCodeInput').value.trim();
-            const orderForm = document.getElementById('orderForm');
+               function showError(message) {
+                   errorMessage.textContent = message;
+                   errorMessage.style.display = 'block';
+                   setTimeout(() => {
+                       errorMessage.style.display = 'none';
+                   }, 5000);
+               }
 
-            // Check for admin code
-            if (tableCode === 'admin123') {
-                window.location.href = 'admin.html';
-                return;
-            }
+               async function loadOrder() {
+                   const tableCode = document.getElementById('tableCodeInput').value.trim();
+                   const orderForm = document.getElementById('orderForm');
+                   errorMessage.style.display = 'none';
 
-            if (!tableCode) {
-                alert('Please enter a table code.');
-                orderForm.classList.remove('active');
-                return;
-            }
+                   // Check for admin code
+                   if (tableCode === 'admin123') {
+                       window.location.href = '/admin.html';
+                       return;
+                   }
 
-            try {
-                const response = await fetch(`https://five-cuts.vercel.app/orders?tableCode=${tableCode}`);
-                const orders = await response.json();
+                   if (!tableCode) {
+                       showError('Please enter a table code.');
+                       orderForm.classList.remove('active');
+                       return;
+                   }
 
-                if (orders.length === 0) {
-                    alert('No reservation found with this code.');
-                    orderForm.classList.remove('active');
-                    resetForm();
-                    return;
-                }
+                   try {
+                       const response = await fetch(`/orders?tableCode=${tableCode}`);
+                       const orders = await response.json();
 
-                const order = orders[0];
-                document.getElementById('tableNumber').value = order.table_number;
-                document.getElementById('username').value = order.username;
-                document.getElementById('phone').value = order.phone_number;
-                document.getElementById('reservationTime').value = order.reservation_date.slice(0, 16);
+                       if (orders.length === 0) {
+                           showError('No reservation found with this code.');
+                           orderForm.classList.remove('active');
+                           resetForm();
+                           return;
+                       }
 
-                document.querySelectorAll('.order-form .menu-item').forEach(item => {
-                    const itemName = item.getAttribute('data-item');
-                    const slider = item.querySelector('input[type="range"]');
-                    const quantityLabel = item.querySelector('.quantity-label');
-                    let quantity = 0;
+                       const order = orders[0];
+                       document.getElementById('tableNumber').value = order.table_number;
+                       document.getElementById('username').value = order.username;
+                       document.getElementById('phone').value = order.phone_number;
+                       document.getElementById('reservationTime').value = order.reservation_time.slice(0, 16);
 
-                    if (order.item1 && order.item1.includes(itemName)) {
-                        quantity = parseInt(order.item1.match(/x(\d+)/)?.[1]) || 0;
-                    } else if (order.item2 && order.item2.includes(itemName)) {
-                        quantity = parseInt(order.item2.match(/x(\d+)/)?.[1]) || 0;
-                    } else if (order.item3 && order.item3.includes(itemName)) {
-                        quantity = parseInt(order.item3.match(/x(\d+)/)?.[1]) || 0;
-                    } else if (order.item4 && order.item4.includes(itemName)) {
-                        quantity = parseInt(order.item4.match(/x(\d+)/)?.[1]) || 0;
-                    } else if (order.item5 && order.item5.includes(itemName)) {
-                        quantity = parseInt(order.item5.match(/x(\d+)/)?.[1]) || 0;
-                    }
+                       document.querySelectorAll('.order-form .menu-item').forEach(item => {
+                           const itemName = item.getAttribute('data-item');
+                           const slider = item.querySelector('input[type="range"]');
+                           const quantityLabel = item.querySelector('.quantity-label');
+                           let quantity = 0;
 
-                    slider.value = quantity;
-                    quantityLabel.textContent = `Quantity: ${quantity}`;
-                    slider.style.setProperty('--value', `${(quantity / 10) * 100}%`);
-                    item.classList.toggle('selected', quantity > 0);
-                });
+                           if (order.items) {
+                               const foundItem = order.items.find(i => i.includes(itemName));
+                               if (foundItem) {
+                                   quantity = parseInt(foundItem.match(/x(\d+)/)?.[1]) || 0;
+                               }
+                           }
 
-                currentTableCode = tableCode;
-                orderForm.classList.add('active');
-            } catch (error) {
-                console.error('Error fetching order:', error);
-                orderForm.classList.remove('active');
-                resetForm();
-            }
-        }
+                           slider.value = quantity;
+                           quantityLabel.textContent = `Quantity: ${quantity}`;
+                           slider.style.setProperty('--value', `${(quantity / 10) * 100}%`);
+                           item.classList.toggle('selected', quantity > 0);
+                       });
 
-        async function updateOrder() {
-            if (!currentTableCode) {
-                alert('Please load a reservation first using the table code.');
-                return;
-            }
+                       currentTableCode = tableCode;
+                       orderForm.classList.add('active');
+                   } catch (error) {
+                       console.error('Error fetching order:', error);
+                       showError('Cannot connect to the server. Please try again later.');
+                       orderForm.classList.remove('active');
+                       resetForm();
+                   }
+               }
 
-            const tableNumber = document.getElementById('tableNumber').value.trim();
-            const username = document.getElementById('username').value.trim();
-            const phoneNumber = document.getElementById('phone').value.trim();
-            const reservationTime = document.getElementById('reservationTime').value;
-            const itemsWithQuantities = Array.from(document.querySelectorAll('.order-form .menu-item'))
-                .map(item => {
-                    const itemName = item.getAttribute('data-item');
-                    const quantity = parseInt(item.querySelector('input[type="range"]').value);
-                    return quantity > 0 ? `${itemName} (x${quantity})` : null;
-                })
-                .filter(item => item !== null);
+               async function updateOrder() {
+                   if (!currentTableCode) {
+                       showError('Please load a reservation first using the table code.');
+                       return;
+                   }
 
-            if (username.length < 2) {
-                alert('Name must be at least 2 characters long.');
-                return;
-            }
-            if (!/^\d{10,}$/.test(phoneNumber)) {
-                alert('Please enter a valid phone number (at least 10 digits).');
-                return;
-            }
-            if (!reservationTime) {
-                alert('Please select a reservation date and time.');
-                return;
-            }
-            if (itemsWithQuantities.length === 0) {
-                alert('Please select at least one item with a quantity greater than 0.');
-                return;
-            }
+                   const tableNumber = document.getElementById('tableNumber').value.trim();
+                   const username = document.getElementById('username').value.trim();
+                   const phoneNumber = document.getElementById('phone').value.trim();
+                   const reservationTime = document.getElementById('reservationTime').value;
+                   const itemsWithQuantities = Array.from(document.querySelectorAll('.order-form .menu-item'))
+                       .map(item => {
+                           const itemName = item.getAttribute('data-item');
+                           const quantity = parseInt(item.querySelector('input[type="range"]').value);
+                           return quantity > 0 ? `${itemName} (x${quantity})` : null;
+                       })
+                       .filter(item => item !== null);
 
-            try {
-                const response = await fetch('https://five-cuts.vercel.app/update', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tableCode: currentTableCode, tableNumber, username, phoneNumber, reservationTime, items: itemsWithQuantities })
-                });
+                   if (username.length < 2) {
+                       showError('Name must be at least 2 characters long.');
+                       return;
+                   }
+                   if (!/^\d{10,}$/.test(phoneNumber)) {
+                       showError('Please enter a valid phone number (at least 10 digits).');
+                       return;
+                   }
+                   if (!reservationTime) {
+                       showError('Please select a reservation date and time.');
+                       return;
+                   }
+                   if (itemsWithQuantities.length === 0) {
+                       showError('Please select at least one item with a quantity greater than 0.');
+                       return;
+                   }
 
-                const data = await response.json();
-                if (response.ok) {
-                    alert('Reservation updated successfully!');
-                    loadOrder();
-                } else {
-                    alert(data.message || 'An error occurred while updating.');
-                }
-            } catch (error) {
-                console.error('Error updating reservation:', error);
-                alert('Unable to update reservation.');
-            }
-        }
+                   try {
+                       const response = await fetch('/update', {
+                           method: 'PUT',
+                           headers: { 'Content-Type': 'application/json' },
+                           body: JSON.stringify({ tableCode: currentTableCode, tableNumber, username, phoneNumber, reservationTime, items: itemsWithQuantities })
+                       });
 
-        async function cancelReservation() {
-            if (!currentTableCode) {
-                alert('Please load a reservation first using the table code.');
-                return;
-            }
+                       const data = await response.json();
+                       if (response.ok) {
+                           showError('Reservation updated successfully!');
+                           loadOrder();
+                       } else {
+                           showError(data.message || 'An error occurred while updating.');
+                       }
+                   } catch (error) {
+                       console.error('Error updating reservation:', error);
+                       showError('Unable to update reservation.');
+                   }
+               }
 
-            if (!confirm('Are you sure you want to cancel this reservation?')) return;
+               async function cancelReservation() {
+                   if (!currentTableCode) {
+                       showError('Please load a reservation first using the table code.');
+                       return;
+                   }
 
-            try {
-                const response = await fetch('https://five-cuts.vercel.app/cancel', {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tableCode: currentTableCode })
-                });
+                   if (!confirm('Are you sure you want to cancel this reservation?')) return;
 
-                const data = await response.json();
-                if (response.ok) {
-                    alert('Reservation canceled successfully!');
-                    document.getElementById('orderForm').classList.remove('active');
-                    resetForm();
-                    currentTableCode = null;
-                } else {
-                    alert(data.message || 'An error occurred while canceling.');
-                }
-            } catch (error) {
-                console.error('Error canceling reservation:', error);
-                alert('Unable to cancel reservation.');
-            }
-        }
+                   try {
+                       const response = await fetch('/cancel', {
+                           method: 'DELETE',
+                           headers: { 'Content-Type': 'application/json' },
+                           body: JSON.stringify({ tableCode: currentTableCode })
+                       });
 
-        function resetForm() {
-            document.getElementById('tableNumber').value = '';
-            document.getElementById('username').value = '';
-            document.getElementById('phone').value = '';
-            document.getElementById('reservationTime').value = '';
-            document.querySelectorAll('.order-form .menu-item').forEach(item => {
-                const slider = item.querySelector('input[type="range"]');
-                const quantityLabel = item.querySelector('.quantity-label');
-                slider.value = 0;
-                quantityLabel.textContent = 'Quantity: 0';
-                slider.style.setProperty('--value', '0%');
-                item.classList.remove('selected');
-            });
-        }
+                       const data = await response.json();
+                       if (response.ok) {
+                           showError('Reservation canceled successfully!');
+                           document.getElementById('orderForm').classList.remove('active');
+                           resetForm();
+                           currentTableCode = null;
+                       } else {
+                           showError(data.message || 'An error occurred while canceling.');
+                       }
+                   } catch (error) {
+                       console.error('Error canceling reservation:', error);
+                       showError('Unable to cancel reservation.');
+                   }
+               }
 
-        function toggleMenu() {
-            const navLinks = document.getElementById('navLinks');
-            const burger = document.getElementById('burger');
-            navLinks.classList.toggle('active');
-            burger.textContent = navLinks.classList.contains('active') ? '✖' : '☰';
-        }
+               function resetForm() {
+                   document.getElementById('tableNumber').value = '';
+                   document.getElementById('username').value = '';
+                   document.getElementById('phone').value = '';
+                   document.getElementById('reservationTime').value = '';
+                   document.querySelectorAll('.order-form .menu-item').forEach(item => {
+                       const slider = item.querySelector('input[type="range"]');
+                       const quantityLabel = item.querySelector('.quantity-label');
+                       slider.value = 0;
+                       quantityLabel.textContent = 'Quantity: 0';
+                       slider.style.setProperty('--value', '0%');
+                       item.classList.remove('selected');
+                   });
+               }
 
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.navbar')) {
-                const navLinks = document.getElementById('navLinks');
-                const burger = document.getElementById('burger');
-                navLinks.classList.remove('active');
-                burger.textContent = '☰';
-            }
-        });
+               function toggleMenu() {
+                   const navLinks = document.getElementById('navLinks');
+                   const burger = document.getElementById('burger');
+                   navLinks.classList.toggle('active');
+                   burger.textContent = navLinks.classList.contains('active') ? '✖' : '☰';
+               }
 
-        document.querySelectorAll('.order-form .menu-item').forEach(item => {
-            const h4 = item.querySelector('h4');
-            const slider = item.querySelector('input[type="range"]');
-            const quantityLabel = item.querySelector('.quantity-label');
+               document.addEventListener('click', (e) => {
+                   if (!e.target.closest('.navbar')) {
+                       const navLinks = document.getElementById('navLinks');
+                       const burger = document.getElementById('burger');
+                       navLinks.classList.remove('active');
+                       burger.textContent = '☰';
+                   }
+               });
 
-            h4.addEventListener('click', () => {
-                item.classList.toggle('selected');
-                if (!item.classList.contains('selected')) {
-                    slider.value = 0;
-                    quantityLabel.textContent = 'Quantity: 0';
-                    slider.style.setProperty('--value', '0%');
-                } else if (slider.value === '0') {
-                    slider.value = 1;
-                    quantityLabel.textContent = 'Quantity: 1';
-                    slider.style.setProperty('--value', '10%');
-                }
-            });
+               document.querySelectorAll('.order-form .menu-item').forEach(item => {
+                   const h4 = item.querySelector('h4');
+                   const slider = item.querySelector('input[type="range"]');
+                   const quantityLabel = item.querySelector('.quantity-label');
 
-            slider.addEventListener('input', () => {
-                const value = (slider.value / slider.max) * 100;
-                slider.style.setProperty('--value', `${value}%`);
-                quantityLabel.textContent = `Quantity: ${slider.value}`;
-                if (slider.value === '0' && item.classList.contains('selected')) {
-                    item.classList.remove('selected');
-                } else if (slider.value !== '0' && !item.classList.contains('selected')) {
-                    item.classList.add('selected');
-                }
-            });
-        });
-    </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92ff4ad789939ad2',t:'MTc0NDU5MjcwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
+                   h4.addEventListener('click', () => {
+                       item.classList.toggle('selected');
+                       if (!item.classList.contains('selected')) {
+                           slider.value = 0;
+                           quantityLabel.textContent = 'Quantity: 0';
+                           slider.style.setProperty('--value', '0%');
+                       } else if (slider.value === '0') {
+                           slider.value = 1;
+                           quantityLabel.textContent = 'Quantity: 1';
+                           slider.style.setProperty('--value', '10%');
+                       }
+                   });
+
+                   slider.addEventListener('input', () => {
+                       const value = (slider.value / slider.max) * 100;
+                       slider.style.setProperty('--value', `${value}%`);
+                       quantityLabel.textContent = `Quantity: ${slider.value}`;
+                       if (slider.value === '0' && item.classList.contains('selected')) {
+                           item.classList.remove('selected');
+                       } else if (slider.value !== '0' && !item.classList.contains('selected')) {
+                           item.classList.add('selected');
+                       }
+                   });
+               });
+           </script>
+       </body>
+       </html>

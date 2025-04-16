@@ -201,12 +201,14 @@ app.delete('/cancel', async (req, res) => {
 
 app.post('/admin/reservations', async (req, res) => {
     const { adminCode } = req.body;
-    console.log('Received /admin/reservations:', { adminCode });
-    if (!adminCode || adminCode !== 'admin123') {
-        return res.status(403).json({ error: 'Invalid admin code.' });
-    }
+    console.log('Received /admin/reservations request:', { adminCode });
     try {
+        if (!adminCode || adminCode !== 'admin123') {
+            console.warn('Invalid admin code received:', adminCode);
+            return res.status(403).json({ error: 'Invalid admin code.' });
+        }
         const result = await pool.query('SELECT * FROM reservations');
+        console.log('Reservations fetched:', result.rows.length);
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error in /admin/reservations:', error.stack);

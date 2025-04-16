@@ -16,7 +16,7 @@
          ],
          "routes": [
            {
-             "src": "/(reserve|create-reservation|orders|update|cancel|admin/reservations|debug/reservations)",
+             "src": "/(reserve|create-reservation)",
              "dest": "server.js"
            },
            {

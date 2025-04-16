@@ -1,1 +1,27 @@
+# Node.js
 node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment variables
+.env
+
+# Database
+*.db
+reservations.db
+
+# Build output
+dist/
+build/
+
+# Logs
+logs/
+*.log
+
+# Editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln

@@ -1,105 +1,107 @@
 body {
+    font-family: Arial, sans-serif;
     margin: 0;
-    font-family: 'Cinzel', serif;
-    background-color: #F5F5DC;
-    color: #4A4A4A;
-    overflow-x: hidden;
-}
-
-.navbar {
-    background-color: #1C2526;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.logo {
-    width: 50px;
-    height: 50px;
-    background-color: #B8860B;
-    border-radius: 50%;
-    transition: transform 0.3s ease;
-}
-
-.logo:hover {
-    transform: scale(1.1);
-}
-
-.nav-links {
-    display: flex;
-    list-style: none;
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+  
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  h1 {
+    color: #333;
+  }
+  
+  h2 {
+    color: #555;
+  }
+  
+  #reservation-form {
+    max-width: 500px;
     margin: 0 auto;
-    padding: 0;
-}
-
-.nav-links li {
-    margin: 0 30px; /* زيادة المسافة بين التابات من 20px إلى 30px */
-}
-
-.nav-links a {
-    color: #F5F5DC;
-    text-decoration: none;
-    font-size: 18px;
-    transition: color 0.3s ease;
-}
-
-.nav-links a:hover {
-    color: #B8860B;
-}
-
-.burger {
-    display: none;
-    font-size: 24px;
-    color: #B8860B;
-    cursor: pointer;
-    margin-right: 20px;
-}
-
-.btn {
-    background-color: #B8860B;
-    color: #1C2526;
-    padding: 12px 25px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  label {
+    font-weight: bold;
+  }
+  
+  input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  button {
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     cursor: pointer;
-    font-family: 'Cinzel', serif;
-    transition: all 0.3s ease;
-}
-
-.btn:hover {
-    background-color: #800000;
-    color: #F5F5DC;
-}
-
-@media (max-width: 768px) {
-    .burger {
-        display: block;
+  }
+  
+  button:hover {
+    background-color: #218838;
+  }
+  
+  #reservations-list {
+    margin-top: 40px;
+  }
+  
+  table {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f8f8f8;
+  }
+  
+  .action-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .edit-btn {
+    background-color: #ffc107;
+    color: #fff;
+  }
+  
+  .delete-btn {
+    background-color: #dc3545;
+    color: #fff;
+  }
+  
+  @media (max-width: 600px) {
+    #reservation-form {
+      padding: 15px;
     }
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        background-color: #1C2526;
-        width: 100%;
-        text-align: center;
-        opacity: 0; /* لبدء الأنيميشن من الصفر */
-        transform: translateY(-20px); /* بداية من أعلى قليلاً */
-        transition: opacity 0.5s ease, transform 0.5s ease; /* أنيميشن بطيء */
+  
+    table {
+      font-size: 14px;
     }
-    .nav-links.active {
-        display: flex;
-        opacity: 1;
-        transform: translateY(0); /* تنزل ببطء */
-    }
-    .nav-links li {
-        margin: 10px 0;
-    }
-}
+  }

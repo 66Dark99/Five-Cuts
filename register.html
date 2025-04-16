@@ -1,153 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Five Cuts - Register</title>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" as="style" onload="this.rel='stylesheet'">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Cinzel', serif;
-            overflow-x: hidden;
-            background: #1C2526;
-        }
-        .navbar {
-            background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-        .logo {
-            width: 50px;
-            height: 50px;
-            background-color: #B8860B;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-        }
-        .logo:hover {
-            transform: scale(1.1);
-        }
-        .nav-links {
-            display: flex;
-            list-style: none;
-            margin: 0 auto;
-            padding: 0;
-        }
-        .nav-links li {
-            margin: 0 30px;
-        }
-        .nav-links a {
-            color: #F5F5DC;
-            text-decoration: none;
-            font-size: 18px;
-            transition: color 0.3s ease;
-        }
-        .nav-links a:hover {
-            color: #B8860B;
-        }
-        .burger {
-            display: none;
-            font-size: 24px;
-            color: #B8860B;
-            cursor: pointer;
-            margin-right: 20px;
-        }
-        .register-container {
-            width: 300px;
-            margin: 100px auto;
-            background: rgba(28, 37, 38, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-        }
-        .register-container input, .register-container button {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #B8860B;
-            border-radius: 5px;
-            background: rgba(42, 51, 52, 0.9);
-            color: #F5F5DC;
-            font-family: 'Cinzel', serif;
-        }
-        .register-container button {
-            background-color: #B8860B;
-            cursor: pointer;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Five Cuts</title>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo"></div>
-        <ul class="nav-links" id="navLinks">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="menu.html">Menu</a></li>
-            <li><a href="tables.html">Tables</a></li>
-            <li><a href="chefs.html">Chefs</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="restaurant_orders.html">Orders</a></li>
-              <li><a href="register.html">Register</a></li>
-        </ul>
-        <div class="burger" id="burger" onclick="toggleMenu()">☰</div>
-    </nav>
+  <h1>Register</h1>
+  <form id="registerForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" required><br><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" required><br><br>
+    <label for="phone">Phone Number:</label>
+    <input type="tel" id="phone" required><br><br>
+    <button type="submit">Register</button>
+  </form>
+  <p id="message"></p>
 
-    <div class="register-container">
-        <h2>Register</h2>
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
-        <input type="text" id="phone" placeholder="Phone Number">
-        <button onclick="registerUser()">Register</button>
-    </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/sql-wasm.min.js"></script>
+  <script>
+    // تهيئة قاعدة البيانات في الذاكرة
+    let db;
+    async function initDb() {
+      const SQL = await initSqlJs({
+        locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.8.0/${file}`
+      });
+      db = new SQL.Database();
+      db.run(`
+        CREATE TABLE IF NOT EXISTS users (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          username TEXT NOT NULL UNIQUE,
+          password TEXT NOT NULL,
+          phone_number TEXT NOT NULL
+        )
+      `);
+    }
 
-    <script>
-        async function registerUser() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const phone = document.getElementById('phone').value;
+    // دالة لتشفير كلمة السر باستخدام crypto.subtle
+    async function hashPassword(password) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(password);
+      const hash = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
-            try {
-                const response = await fetch('http://localhost:3000/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password, phone })
-                });
+    // دالة لتسجيل المستخدم
+    async function registerUser(username, password, phone) {
+      if (!username || !password || !phone) {
+        throw new Error('Username, password, and phone number are required.');
+      }
 
-                const data = await response.json();
-                if (response.ok) {
-                    alert('تم التسجيل بنجاح!');
-                    window.location.href = '/tables.html';
-                } else {
-                    alert(data.message || 'حدث خطأ أثناء التسجيل.');
-                }
-            } catch (error) {
-                console.error('خطأ في الاتصال بالخادم:', error);
-                alert('غير قادر على الاتصال بالخادم.');
-            }
+      const hashedPassword = await hashPassword(password);
+
+      // التحقق إذا كان المستخدم موجود بالفعل
+      const existingUser = db.exec(`SELECT id FROM users WHERE username = '${username}'`);
+      if (existingUser.length > 0) {
+        throw new Error('Username already exists.');
+      }
+
+      db.run(
+        `INSERT INTO users (username, password, phone_number) VALUES (?, ?, ?)`,
+        [username, hashedPassword, phone]
+      );
+
+      return { message: 'User registered successfully' };
+    }
+
+    // تهيئة قاعدة البيانات عند تحميل الصفحة
+    initDb().then(() => {
+      document.getElementById('registerForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const phone = document.getElementById('phone').value;
+        const messageElement = document.getElementById('message');
+
+        try {
+          const result = await registerUser(username, password, phone);
+          messageElement.style.color = 'green';
+          messageElement.textContent = result.message;
+        } catch (error) {
+          messageElement.style.color = 'red';
+          messageElement.textContent = error.message || 'Registration failed.';
         }
-        function toggleMenu() {
-            const navLinks = document.getElementById('navLinks');
-            const burger = document.getElementById('burger');
-            navLinks.classList.toggle('active');
-            burger.textContent = navLinks.classList.contains('active') ? '✖' : '☰';
-        }
-
-        document.addEventListener('click', (e) => {
-            const navLinks = document.getElementById('navLinks');
-            const burger = document.getElementById('burger');
-
-            if (!e.target.closest('.navbar') && navLinks.classList.contains('active')) {
-                navLinks.classList.remove('active');
-                burger.textContent = '☰';
-            }
-        });
-    </script>
+      });
+    }).catch(error => {
+      console.error('Failed to initialize database:', error);
+      document.getElementById('message').style.color = 'red';
+      document.getElementById('message').textContent = 'Failed to initialize database.';
+    });
+  </script>
 </body>
 </html>

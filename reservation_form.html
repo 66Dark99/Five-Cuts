@@ -22,7 +22,7 @@
         .form-container {
             background: rgba(28, 37, 38, 0.9);
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             width: 90%;
             max-width: 400px;
@@ -31,7 +31,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
             margin-top: 20px;
         }
         .form-container h1 {
@@ -39,7 +38,7 @@
             text-align: center;
             margin-bottom: 20px;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            font-size: 1.8em;
+            font-size: 2em;
         }
         .form-container input[type="text"],
         .form-container input[type="datetime-local"] {
@@ -51,6 +50,7 @@
             border-radius: 5px;
             color: #F5F5DC;
             font-family: 'Cinzel', serif;
+            font-size: 16px;
         }
         .form-container input[type="datetime-local"] {
             appearance: none;
@@ -159,20 +159,88 @@
             letter-spacing: 2px;
             font-size: 20px;
         }
-        @media (max-width: 480px) {
+        @media (max-width: 768px) {
             .form-container {
                 width: 95%;
                 padding: 15px;
-                margin-top: 15px;
+                max-width: 350px;
             }
             .form-container h1 {
-                font-size: 1.5em;
+                font-size: 1.6em;
+                margin-bottom: 15px;
+            }
+            .form-container input[type="text"],
+            .form-container input[type="datetime-local"] {
+                padding: 8px;
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+            .form-container .menu-item {
+                padding: 8px;
+                margin-bottom: 8px;
             }
             .form-container .menu-item h3 {
                 font-size: 14px;
+                padding: 4px 0;
+            }
+            .form-container .menu-item input[type="range"] {
+                height: 6px;
+            }
+            .form-container .menu-item input[type="range"]::-webkit-slider-thumb {
+                width: 16px;
+                height: 16px;
+            }
+            .form-container .menu-item input[type="range"]::-moz-range-thumb {
+                width: 16px;
+                height: 16px;
+            }
+            .form-container .menu-item .quantity-label {
+                font-size: 12px;
+                margin-top: 4px;
             }
             .form-container button {
+                padding: 8px;
                 font-size: 14px;
+            }
+            .code-display {
+                padding: 12px;
+            }
+            .code-display p {
+                font-size: 14px;
+            }
+            .code-display #tableCode {
+                font-size: 18px;
+            }
+        }
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 12px;
+                max-width: 300px;
+                margin-top: 15px;
+            }
+            .form-container h1 {
+                font-size: 1.4em;
+            }
+            .form-container input[type="text"],
+            .form-container input[type="datetime-local"] {
+                padding: 6px;
+                font-size: 12px;
+            }
+            .form-container .menu-item h3 {
+                font-size: 13px;
+            }
+            .form-container .menu-item .quantity-label {
+                font-size: 11px;
+            }
+            .form-container button {
+                padding: 6px;
+                font-size: 12px;
+            }
+            .code-display p {
+                font-size: 13px;
+            }
+            .code-display #tableCode {
+                font-size: 16px;
             }
         }
     </style>
@@ -230,7 +298,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const tableNumber = urlParams.get('table');
 
-        // Check if reservation is already completed
         const savedReservation = localStorage.getItem('reservation');
         if (savedReservation) {
             const { tableNumber: savedTable, tableCode } = JSON.parse(savedReservation);
@@ -252,7 +319,6 @@
                 return;
             }
 
-            // Smooth slider and item selection
             document.querySelectorAll('.menu-item').forEach(item => {
                 const h3 = item.querySelector('h3');
                 const slider = item.querySelector('input[type="range"]');
@@ -326,7 +392,6 @@
                 console.log('Sending request to server');
 
                 try {
-                    // التحقق من توفر الطاولة أولاً
                     const checkResponse = await fetch('https://five-cuts.vercel.app/reserve', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -340,7 +405,6 @@
                         return;
                     }
 
-                    // إنشاء الحجز
                     const items = itemsWithQuantities.map(i => `${i.item} (x${i.quantity})`);
                     const response = await fetch('https://five-cuts.vercel.app/create-reservation', {
                         method: 'POST',
@@ -380,7 +444,7 @@
             tableCodeSpan.textContent = tableCode;
             codeDisplay.style.display = 'block';
             tableTitle.textContent = `Reservation Confirmed for Table ${tableNumber}`;
-            formContainer.style.padding = '30px';
+            formContainer.style.padding = '20px';
             console.log('Code now permanently displayed');
         }
 
@@ -393,6 +457,9 @@
             errorDiv.style.border = '1px solid #B8860B';
             errorDiv.style.marginBottom = '15px';
             errorDiv.style.textAlign = 'center';
+            errorDiv.style.fontSize = '14px';
+            errorDiv.style.width = '90%';
+            errorDiv.style.maxWidth = '350px';
             errorDiv.textContent = message;
 
             const formContainer = document.querySelector('.form-container');
@@ -403,5 +470,5 @@
             }, 5000);
         }
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'931860978d03bf7c',t:'MTc0NDg1NTczNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

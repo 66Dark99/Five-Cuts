@@ -3,408 +3,405 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Five Cuts - Orders</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <title>Reserve Table - Five Cuts</title>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" as="style" onload="this.rel='stylesheet'">
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
             margin: 0;
             padding: 0;
             font-family: 'Cinzel', serif;
             background: #1C2526;
-            overflow-x: hidden;
-        }
-        .navbar {
-            background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            box-sizing: border-box;
-        }
-        .logo {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            transition: transform 0.3s ease;
-            object-fit: cover;
-        }
-        .logo:hover {
-            transform: scale(1.1);
-        }
-        .nav-links {
-            display: flex;
-            list-style: none;
-            margin: 0 auto;
-            padding: 0;
-        }
-        .nav-links li {
-            margin: 0 25px;
-        }
-        .nav-links a {
-            color: #F5F5DC;
-            text-decoration: none;
-            font-size: 18px;
-            transition: color 0.3s ease;
-        }
-        .nav-links a:hover {
-            color: #B8860B;
-        }
-        .burger {
-            display: none;
-            font-size: 24px;
-            color: #B8860B;
-            cursor: pointer;
-            margin-right: 20px;
-        }
-        .orders-container {
-            margin-top: 70px;
-            width: 100%;
-            max-width: 100%;
-            padding: 20px 15px;
-            box-sizing: border-box;
-            background: linear-gradient(45deg, #1C2526 0%, #2A3334 50%, #4A3F2B 100%);
-            min-height: calc(100vh - 70px);
-        }
-        .orders-container h1 {
-            color: #B8860B;
-            font-size: 36px;
-            text-align: center;
-            margin: 0 0 20px 0;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        }
-        .input-container {
             display: flex;
             justify-content: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
+            align-items: flex-start;
+            min-height: 100vh;
         }
-        .input-container input {
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #B8860B;
-            border-radius: 5px;
-            background: rgba(28, 37, 38, 0.9);
-            color: #F5F5DC;
-            width: 200px;
-            max-width: 100%;
-            font-family: 'Cinzel', serif;
-        }
-        .input-container button {
-            background-color: #B8860B;
-            color: #1C2526;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: 'Cinzel', serif;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-        .input-container button:hover {
-            background-color: #D4A017;
-        }
-        .order-item {
+        .form-container {
             background: rgba(28, 37, 38, 0.9);
             padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 5px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 400px;
             border: 1px solid #B8860B;
+            position: relative;
             display: flex;
             flex-direction: column;
-            box-sizing: border-box;
-            max-width: 100%;
-            word-wrap: break-word;
+            align-items: center;
+            min-height: 100vh;
+            margin-top: 20px;
         }
-        .order-item h2 {
+        .form-container h1 {
             color: #F5F5DC;
-            font-size: 24px;
-            margin: 0 0 10px 0;
+            text-align: center;
+            margin-bottom: 20px;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            font-size: 1.8em;
         }
-        .order-item p {
-            color: #D3D3D3;
+        .form-container input[type="text"],
+        .form-container input[type="datetime-local"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            background: rgba(42, 51, 52, 0.9);
+            border: 1px solid #B8860B;
+            border-radius: 5px;
+            color: #F5F5DC;
+            font-family: 'Cinzel', serif;
+        }
+        .form-container input[type="datetime-local"] {
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .form-container input[type="text"]::placeholder,
+        .form-container input[type="datetime-local"]::placeholder {
+            color: #B8860B;
+            opacity: 0.7;
+        }
+        .form-container .menu-item {
+            background: rgba(42, 51, 52, 0.9);
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #B8860B;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+        .form-container .menu-item.selected {
+            background: rgba(72, 91, 92, 0.9);
+        }
+        .form-container .menu-item h3 {
+            color: #F5F5DC;
             font-size: 16px;
-            margin: 5px 0;
+            margin: 0;
+            padding: 5px 0;
         }
-        .order-item button {
+        .form-container .menu-item .slider-container {
+            display: none;
+            margin-top: 10px;
+        }
+        .form-container .menu-item.selected .slider-container {
+            display: block;
+        }
+        .form-container .menu-item input[type="range"] {
+            width: 100%;
+            background: linear-gradient(to right, #B8860B 0%, #B8860B var(--value), #4A3F2B var(--value), #4A3F2B 100%);
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 5px;
+            outline: none;
+            transition: background 0.1s ease;
+        }
+        .form-container .menu-item input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #F5F5DC;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+        .form-container .menu-item input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #F5F5DC;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+            border: none;
+        }
+        .form-container .menu-item .quantity-label {
+            color: #F5F5DC;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 5px;
+        }
+        .form-container button {
             background-color: #B8860B;
             color: #1C2526;
-            padding: 10px 20px;
+            padding: 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            width: 100%;
             font-family: 'Cinzel', serif;
             font-size: 16px;
-            align-self: flex-start;
-            transition: background-color 0.3s ease;
         }
-        .order-item button:hover {
+        .form-container button:hover {
             background-color: #D4A017;
         }
-        .message-box {
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(91, 72, 72, 0.9);
-            color: #F5F5DC;
+        .form-container button:disabled {
+            background-color: #4A3F2B;
+            cursor: not-allowed;
+        }
+        .code-display {
+            display: none;
+            background: rgba(42, 51, 52, 0.9);
             padding: 15px;
             border-radius: 5px;
             border: 1px solid #B8860B;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             text-align: center;
+            width: 100%;
+        }
+        .code-display p {
+            color: #F5F5DC;
+            margin: 0;
             font-size: 16px;
-            z-index: 1000;
-            display: none;
-            width: 80%;
-            max-width: 400px;
         }
-        .message-box.success {
-            background: rgba(72, 91, 72, 0.9);
-        }
-        @media (max-width: 768px) {
-            .burger {
-                display: block;
-            }
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 60px;
-                left: 0;
-                background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
-                width: 100%;
-                text-align: center;
-                opacity: 0;
-                transform: translateY(-20px);
-                transition: opacity 0.5s ease, transform 0.5s ease;
-            }
-            .nav-links.active {
-                display: flex;
-                opacity: 1;
-                transform: translateY(0);
-            }
-            .nav-links li {
-                margin: 10px 0;
-            }
-            .nav-links a {
-                font-size: 14px;
-            }
-            .orders-container {
-                margin-top: 60px;
-                padding: 15px 10px;
-            }
-            .orders-container h1 {
-                font-size: 28px;
-                margin-bottom: 15px;
-            }
-            .input-container input {
-                width: 160px;
-                font-size: 14px;
-                padding: 8px;
-            }
-            .input-container button {
-                padding: 8px 15px;
-                font-size: 14px;
-            }
-            .order-item {
-                padding: 15px;
-                margin-bottom: 10px;
-            }
-            .order-item h2 {
-                font-size: 20px;
-            }
-            .order-item p {
-                font-size: 14px;
-            }
-            .order-item button {
-                padding: 8px 15px;
-                font-size: 14px;
-            }
-            .message-box {
-                width: 90%;
-                max-width: 300px;
-                font-size: 14px;
-                padding: 10px;
-                top: 70px;
-            }
+        .code-display #tableCode {
+            color: #B8860B;
+            font-weight: 700;
+            letter-spacing: 2px;
+            font-size: 20px;
         }
         @media (max-width: 480px) {
-            .navbar {
-                padding: 8px 15px;
+            .form-container {
+                width: 95%;
+                padding: 15px;
+                margin-top: 15px;
             }
-            .logo {
-                width: 40px;
-                height: 40px;
+            .form-container h1 {
+                font-size: 1.5em;
             }
-            .burger {
-                font-size: 20px;
-                margin-right: 15px;
+            .form-container .menu-item h3 {
+                font-size: 14px;
             }
-            .nav-links {
-                top: 56px;
-            }
-            .nav-links a {
-                font-size: 12px;
-            }
-            .orders-container {
-                padding: 12px 8px;
-            }
-            .orders-container h1 {
-                font-size: 24px;
-            }
-            .input-container input {
-                width: 140px;
-                font-size: 12px;
-                padding: 6px;
-            }
-            .input-container button {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-            .order-item {
-                padding: 12px;
-            }
-            .order-item h2 {
-                font-size: 18px;
-            }
-            .order-item p {
-                font-size: 12px;
-            }
-            .order-item button {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-            .message-box {
-                font-size: 12px;
-                max-width: 280px;
-                padding: 8px;
-                top: 60px;
+            .form-container button {
+                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
-    <nav class="navbar">
-        <img src="logo.png" alt="Five Cuts Logo" class="logo">
-        <ul class="nav-links" id="navLinks">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="menu.html">Menu</a></li>
-            <li><a href="tables.html">Tables</a></li>
-            <li><a href="chefs.html">Chefs</a></li>
-            <li><a href="contact.html">Contact</a></li>
-            <li><a href="restaurant_orders.html">Orders</a></li>
-        </ul>
-        <div class="burger" id="burger" onclick="toggleMenu()">☰</div>
-    </nav>
-
-    <div class="orders-container">
-        <h1>Your Orders</h1>
-        <div class="input-container">
-            <input type="text" id="tableCodeInput" placeholder="Enter Table Code">
-            <button onclick="fetchOrders()">View Orders</button>
+    <div class="form-container">
+        <h1 id="table-title">Reserve Table</h1>
+        <div id="reservationForm">
+            <input type="text" id="username" placeholder="Your Name" required>
+            <input type="text" id="phone" placeholder="Phone Number" required>
+            <input type="datetime-local" id="reservationTime" placeholder="Reservation Date & Time" required>
+            <div class="menu-item" data-item="Ribeye Steak">
+                <h3>Ribeye Steak</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <div class="menu-item" data-item="Filet Mignon">
+                <h3>Filet Mignon</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <div class="menu-item" data-item="T-Bone">
+                <h3>T-Bone</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <div class="menu-item" data-item="Wagyu">
+                <h3>Wagyu</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <div class="menu-item" data-item="Smoked Brisket">
+                <h3>Smoked Brisket</h3>
+                <div class="slider-container">
+                    <input type="range" name="quantity" min="0" max="10" value="0">
+                    <div class="quantity-label">Quantity: 0</div>
+                </div>
+            </div>
+            <button type="button" id="reserveButton">Reserve</button>
         </div>
-        <div id="ordersList"></div>
+        <div class="code-display" id="codeDisplay">
+            <p>Your Table Code: <span id="tableCode"></span></p>
+        </div>
     </div>
-    <div class="message-box" id="messageBox"></div>
 
     <script>
-        function toggleMenu() {
-            const navLinks = document.getElementById('navLinks');
-            const burger = document.getElementById('burger');
-            navLinks.classList.toggle('active');
-            burger.textContent = navLinks.classList.contains('active') ? '✖' : '☰';
-        }
+        const urlParams = new URLSearchParams(window.location.search);
+        const tableNumber = urlParams.get('table');
 
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.navbar')) {
-                const navLinks = document.getElementById('navLinks');
-                const burger = document.getElementById('burger');
-                navLinks.classList.remove('active');
-                burger.textContent = '☰';
+        // Check if reservation is already completed
+        const savedReservation = localStorage.getItem('reservation');
+        if (savedReservation) {
+            const { tableNumber: savedTable, tableCode } = JSON.parse(savedReservation);
+            if (savedTable === tableNumber) {
+                showTableCode(savedTable, tableCode);
+            } else {
+                localStorage.removeItem('reservation');
+                initializeForm();
             }
-        });
-
-        function showMessage(message, type = 'error') {
-            const messageBox = document.getElementById('messageBox');
-            messageBox.textContent = message;
-            messageBox.className = `message-box ${type}`;
-            messageBox.style.display = 'block';
-            setTimeout(() => {
-                messageBox.style.display = 'none';
-            }, 5000);
+        } else {
+            initializeForm();
         }
 
-        async function fetchOrders() {
-            const tableCode = document.getElementById('tableCodeInput').value.trim();
-            if (!tableCode) {
-                showMessage('Please enter a table code.', 'error');
+        function initializeForm() {
+            if (tableNumber) {
+                document.getElementById('table-title').textContent = `Reserve Table ${tableNumber}`;
+            } else {
+                showError('No table selected. Please choose a table to proceed.');
                 return;
             }
-            try {
-                const response = await fetch(`https://five-cuts.vercel.app/orders?tableCode=${encodeURIComponent(tableCode)}`);
-                if (!response.ok) throw new Error('Failed to fetch orders');
-                const orders = await response.json();
-                displayOrders(orders);
-            } catch (error) {
-                showMessage('Unable to fetch orders. Please try again later.', 'error');
-                console.error('Fetch error:', error);
-            }
-        }
 
-        function displayOrders(orders) {
-            const ordersList = document.getElementById('ordersList');
-            ordersList.innerHTML = '';
-            if (!orders || orders.length === 0) {
-                ordersList.innerHTML = '<p style="color: #D3D3D3; text-align: center; font-size: 16px;">No orders found.</p>';
-                return;
-            }
-            orders.forEach(order => {
-                const orderItem = document.createElement('div');
-                orderItem.className = 'order-item';
-                orderItem.innerHTML = `
-                    <h2>Table ${order.tableNumber}</h2>
-                    <p>Name: ${order.username}</p>
-                    <p>Phone: ${order.phoneNumber}</p>
-                    <p>Time: ${new Date(order.reservationTime).toLocaleString()}</p>
-                    <p>Items: ${order.items.join(', ')}</p>
-                    <p>Code: ${order.tableCode}</p>
-                    <button onclick="cancelOrder('${order.tableCode}')">Cancel Order</button>
-                `;
-                ordersList.appendChild(orderItem);
+            // Smooth slider and item selection
+            document.querySelectorAll('.menu-item').forEach(item => {
+                const h3 = item.querySelector('h3');
+                const slider = item.querySelector('input[type="range"]');
+                const quantityLabel = item.querySelector('.quantity-label');
+
+                h3.addEventListener('click', () => {
+                    item.classList.toggle('selected');
+                    if (!item.classList.contains('selected')) {
+                        slider.value = 0;
+                        quantityLabel.textContent = 'Quantity: 0';
+                        slider.style.setProperty('--value', '0%');
+                    } else if (slider.value === '0') {
+                        slider.value = 1;
+                        quantityLabel.textContent = 'Quantity: 1';
+                        slider.style.setProperty('--value', '10%');
+                    }
+                });
+
+                slider.addEventListener('input', () => {
+                    const value = (slider.value / slider.max) * 100;
+                    slider.style.setProperty('--value', `${value}%`);
+                    quantityLabel.textContent = `Quantity: ${slider.value}`;
+                    if (slider.value === '0' && item.classList.contains('selected')) {
+                        item.classList.remove('selected');
+                    } else if (slider.value !== '0' && !item.classList.contains('selected')) {
+                        item.classList.add('selected');
+                    }
+                });
+            });
+
+            document.getElementById('reserveButton').addEventListener('click', async (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                console.log('Starting reservation process');
+
+                const username = document.getElementById('username').value.trim();
+                const phoneNumber = document.getElementById('phone').value.trim();
+                const reservationTime = document.getElementById('reservationTime').value;
+                const itemsWithQuantities = Array.from(document.querySelectorAll('.menu-item.selected'))
+                    .map(item => {
+                        const itemName = item.getAttribute('data-item');
+                        const quantity = parseInt(item.querySelector('input[type="range"]').value);
+                        return quantity > 0 ? { item: itemName, quantity } : null;
+                    })
+                    .filter(item => item !== null);
+
+                if (!tableNumber) {
+                    showError('No table selected. Please choose a table from the tables page.');
+                    return;
+                }
+                if (username.length < 2) {
+                    showError('Name must be at least 2 characters long.');
+                    return;
+                }
+                if (!/^\d{10,}$/.test(phoneNumber)) {
+                    showError('Please enter a valid phone number (at least 10 digits).');
+                    return;
+                }
+                if (!reservationTime) {
+                    showError('Please select a reservation date and time.');
+                    return;
+                }
+                if (itemsWithQuantities.length === 0) {
+                    showError('Please select at least one item with a quantity greater than 0.');
+                    return;
+                }
+
+                const reserveButton = document.getElementById('reserveButton');
+                reserveButton.textContent = 'Reserving...';
+                reserveButton.disabled = true;
+                console.log('Sending request to server');
+
+                try {
+                    // التحقق من توفر الطاولة أولاً
+                    const checkResponse = await fetch('https://five-cuts.vercel.app/reserve', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ tableNumber })
+                    });
+                    const checkData = await checkResponse.json();
+                    if (!checkResponse.ok) {
+                        showError(checkData.error || 'This table is already reserved.');
+                        reserveButton.textContent = 'Reserve';
+                        reserveButton.disabled = false;
+                        return;
+                    }
+
+                    // إنشاء الحجز
+                    const items = itemsWithQuantities.map(i => `${i.item} (x${i.quantity})`);
+                    const response = await fetch('https://five-cuts.vercel.app/create-reservation', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ tableNumber, username, phoneNumber, reservationTime, items })
+                    });
+
+                    const data = await response.json();
+                    console.log('Server response:', data);
+
+                    if (response.ok && data.tableCode) {
+                        console.log('Reservation successful, showing code');
+                        localStorage.setItem('reservation', JSON.stringify({ tableNumber, tableCode: data.tableCode }));
+                        showTableCode(tableNumber, data.tableCode);
+                    } else {
+                        showError(data.error || 'An error occurred during reservation.');
+                        reserveButton.textContent = 'Reserve';
+                        reserveButton.disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Error sending reservation:', error);
+                    showError('Unable to connect to the server. Please try again.');
+                    reserveButton.textContent = 'Reserve';
+                    reserveButton.disabled = false;
+                }
             });
         }
 
-        async function cancelOrder(tableCode) {
-            const button = event.target;
-            button.textContent = 'Cancelling...';
-            button.disabled = true;
-            try {
-                const response = await fetch('https://five-cuts.vercel.app/cancel-reservation', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ tableCode })
-                });
-                const data = await response.json();
-                if (response.ok) {
-                    showMessage('Order cancelled successfully.', 'success');
-                    fetchOrders();
-                } else {
-                    showMessage('Failed to cancel order.', 'error');
-                }
-            } catch (error) {
-                showMessage('Unable to cancel order. Please try again.', 'error');
-            } finally {
-                button.textContent = 'Cancel Order';
-                button.disabled = false;
-            }
+        function showTableCode(tableNumber, tableCode) {
+            const formContainer = document.querySelector('.form-container');
+            const reservationForm = document.getElementById('reservationForm');
+            const codeDisplay = document.getElementById('codeDisplay');
+            const tableCodeSpan = document.getElementById('tableCode');
+            const tableTitle = document.getElementById('table-title');
+
+            if (reservationForm) reservationForm.remove();
+            tableCodeSpan.textContent = tableCode;
+            codeDisplay.style.display = 'block';
+            tableTitle.textContent = `Reservation Confirmed for Table ${tableNumber}`;
+            formContainer.style.padding = '30px';
+            console.log('Code now permanently displayed');
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.style.background = 'rgba(91, 72, 72, 0.9)';
+            errorDiv.style.color = '#F5F5DC';
+            errorDiv.style.padding = '10px';
+            errorDiv.style.borderRadius = '5px';
+            errorDiv.style.border = '1px solid #B8860B';
+            errorDiv.style.marginBottom = '15px';
+            errorDiv.style.textAlign = 'center';
+            errorDiv.textContent = message;
+
+            const formContainer = document.querySelector('.form-container');
+            formContainer.insertBefore(errorDiv, formContainer.firstChild);
+
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
         }
     </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'931a47e65826e18d',t:'MTc0NDg3NTY5NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

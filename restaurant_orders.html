@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Five Cuts - Orders</title>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" as="style" onload="this.rel='stylesheet'">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -147,10 +147,6 @@
         .order-item button:hover {
             background-color: #D4A017;
         }
-        .order-item button:disabled {
-            background-color: #4A3F2B;
-            cursor: not-allowed;
-        }
         .message-box {
             position: fixed;
             top: 80px;
@@ -198,7 +194,7 @@
                 margin: 10px 0;
             }
             .nav-links a {
-                font-size: 16px;
+                font-size: 14px;
             }
             .orders-container {
                 margin-top: 60px;
@@ -209,7 +205,7 @@
                 margin-bottom: 15px;
             }
             .input-container input {
-                width: 180px;
+                width: 160px;
                 font-size: 14px;
                 padding: 8px;
             }
@@ -255,7 +251,7 @@
                 top: 56px;
             }
             .nav-links a {
-                font-size: 14px;
+                font-size: 12px;
             }
             .orders-container {
                 padding: 12px 8px;
@@ -264,8 +260,8 @@
                 font-size: 24px;
             }
             .input-container input {
-                width: 150px;
-                font-size: 13px;
+                width: 140px;
+                font-size: 12px;
                 padding: 6px;
             }
             .input-container button {
@@ -279,7 +275,7 @@
                 font-size: 18px;
             }
             .order-item p {
-                font-size: 13px;
+                font-size: 12px;
             }
             .order-item button {
                 padding: 6px 12px;
@@ -311,7 +307,7 @@
     <div class="orders-container">
         <h1>Your Orders</h1>
         <div class="input-container">
-            <input type="text" id="tableCodeInput" placeholder="Enter Table Code" required>
+            <input type="text" id="tableCodeInput" placeholder="Enter Table Code">
             <button onclick="fetchOrders()">View Orders</button>
         </div>
         <div id="ordersList"></div>
@@ -345,36 +341,20 @@
             }, 5000);
         }
 
-        async function fetchOrders(retry = true) {
+        async function fetchOrders() {
             const tableCode = document.getElementById('tableCodeInput').value.trim();
             if (!tableCode) {
-                showMessage('Please enter a valid table code.', 'error');
+                showMessage('Please enter a table code.', 'error');
                 return;
             }
-
             try {
-                const response = await fetch(`https://five-cuts.vercel.app/orders?tableCode=${encodeURIComponent(tableCode)}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    }
-                });
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(`Server error: ${response.status} - ${errorData.error || 'Unknown error'}`);
-                }
+                const response = await fetch(`https://five-cuts.vercel.app/orders?tableCode=${encodeURIComponent(tableCode)}`);
+                if (!response.ok) throw new Error('Failed to fetch orders');
                 const orders = await response.json();
-                console.log('Fetched orders:', orders);
                 displayOrders(orders);
             } catch (error) {
-                console.error('Error fetching orders:', error.message);
-                if (retry) {
-                    console.log('Retrying fetchOrders...');
-                    setTimeout(() => fetchOrders(false), 2000);
-                } else {
-                    showMessage(`Unable to fetch orders: ${error.message}. Please try again later.`, 'error');
-                }
+                showMessage('Unable to fetch orders. Please try again later.', 'error');
+                console.error('Fetch error:', error);
             }
         }
 
@@ -382,7 +362,7 @@
             const ordersList = document.getElementById('ordersList');
             ordersList.innerHTML = '';
             if (!orders || orders.length === 0) {
-                ordersList.innerHTML = '<p style="color: #D3D3D3; text-align: center; font-size: 16px;">No orders found for this table code.</p>';
+                ordersList.innerHTML = '<p style="color: #D3D3D3; text-align: center; font-size: 16px;">No orders found.</p>';
                 return;
             }
             orders.forEach(order => {
@@ -408,10 +388,7 @@
             try {
                 const response = await fetch('https://five-cuts.vercel.app/cancel-reservation', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tableCode })
                 });
                 const data = await response.json();
@@ -419,21 +396,15 @@
                     showMessage('Order cancelled successfully.', 'success');
                     fetchOrders();
                 } else {
-                    showMessage(data.error || 'Failed to cancel order.', 'error');
-                    button.textContent = 'Cancel Order';
-                    button.disabled = false;
+                    showMessage('Failed to cancel order.', 'error');
                 }
             } catch (error) {
-                console.error('Error cancelling order:', error.message);
-                showMessage(`Unable to cancel order: ${error.message}. Please try again.`, 'error');
+                showMessage('Unable to cancel order. Please try again.', 'error');
+            } finally {
                 button.textContent = 'Cancel Order';
                 button.disabled = false;
             }
         }
-
-        document.getElementById('tableCodeInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') fetchOrders();
-        });
     </script>
 </body>
 </html>

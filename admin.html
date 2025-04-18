@@ -3,20 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Five Cuts</title>
+    <title>Admin</title>
+    <link rel="icon" type="image/png" href="logo.png">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" as="style" onload="this.rel='stylesheet'">
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
             margin: 0;
-            padding: 20px;
+            padding: 0;
             font-family: 'Cinzel', serif;
             background: #1C2526;
             color: #F5F5DC;
-            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .navbar {
+            background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        .logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            object-fit: cover;
+        }
+        .logo:hover {
+            transform: scale(1.1);
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            margin: 0 auto;
+            padding: 0;
+        }
+        .nav-links li {
+            margin: 0 30px;
+        }
+        .nav-links a {
+            color: #F5F5DC;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: #B8860B;
+        }
+        .burger {
+            display: none;
+            font-size: 24px;
+            color: #B8860B;
+            cursor: pointer;
         }
         .admin-container {
+            margin-top: 60px;
             max-width: 800px;
-            margin: 0 auto;
+            margin-left: auto;
+            margin-right: auto;
             background: rgba(28, 37, 38, 0.9);
             padding: 20px;
             border-radius: 10px;
@@ -26,6 +78,7 @@
         h1 {
             text-align: center;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            font-size: 32px;
         }
         .reservations-list {
             display: block;
@@ -40,6 +93,7 @@
         .reservation-item p {
             margin: 5px 0;
             color: #F5F5DC;
+            font-size: 16px;
         }
         .reservation-item button {
             padding: 5px 15px;
@@ -50,13 +104,14 @@
             cursor: pointer;
             margin-right: 10px;
             font-family: 'Cinzel', serif;
+            font-size: 14px;
         }
         .reservation-item button:hover {
             background-color: #D4A017;
         }
         .message-box {
             position: fixed;
-            top: 20px;
+            top: 80px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(42, 51, 52, 0.9);
@@ -122,6 +177,7 @@
             border-radius: 5px;
             cursor: pointer;
             font-family: 'Cinzel', serif;
+            font-size: 14px;
         }
         .confirm-modal button:hover, .edit-modal button:hover {
             background-color: #D4A017;
@@ -135,6 +191,7 @@
             border-radius: 5px;
             color: #F5F5DC;
             font-family: 'Cinzel', serif;
+            font-size: 14px;
         }
         .edit-modal .menu-item {
             background: rgba(28, 37, 38, 0.9);
@@ -195,9 +252,72 @@
             text-align: center;
             margin-top: 5px;
         }
+        @media (max-width: 768px) {
+            .burger {
+                display: block;
+                margin-left: auto;
+            }
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
+                width: 100%;
+                text-align: center;
+                opacity: 0;
+                transform: translateY(-20px);
+                transition: opacity 0.5s ease, transform 0.5s ease;
+            }
+            .nav-links.active {
+                display: flex;
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .nav-links li {
+                margin: 10px 0;
+            }
+            .admin-container {
+                padding: 10px;
+                margin: 60px 10px 0;
+            }
+            h1 {
+                font-size: 24px;
+            }
+        }
+        @media (max-width: 480px) {
+            .reservation-item p {
+                font-size: 14px;
+            }
+            .reservation-item button {
+                font-size: 12px;
+                padding: 4px 12px;
+            }
+            .logo {
+                width: 40px;
+                height: 40px;
+            }
+            .nav-links a {
+                font-size: 16px;
+            }
+        }
     </style>
 </head>
 <body>
+    <nav class="navbar">
+        <img src="logo.png" alt="Five Cuts Logo" class="logo">
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="tables.html">Tables</a></li>
+            <li><a href="chefs.html">Chefs</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="restaurant_orders.html">Orders</a></li>
+        </ul>
+        <div class="burger" id="burger" onclick="toggleMenu()">☰</div>
+    </nav>
+
     <div class="admin-container">
         <h1>Reservations Management</h1>
         <div class="reservations-list" id="reservationsList"></div>
@@ -259,13 +379,23 @@
         const ADMIN_CODE = 'admin123';
         const SERVER_URL = 'https://five-cuts.vercel.app/admin/reservations';
 
-        // DOM Elements
-        const reservationsList = document.getElementById('reservationsList');
-        const editModal = document.getElementById('editModal');
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            const burger = document.getElementById('burger');
+            navLinks.classList.toggle('active');
+            burger.textContent = navLinks.classList.contains('active') ? '✖' : '☰';
+        }
 
-        // Show Message Function
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.navbar')) {
+                const navLinks = document.getElementById('navLinks');
+                const burger = document.getElementById('burger');
+                navLinks.classList.remove('active');
+                burger.textContent = '☰';
+            }
+        });
+
         function showMessage(message, type = 'success') {
-            console.log(`Message: ${message}, Type: ${type}`);
             const messageBox = document.getElementById('messageBox');
             messageBox.textContent = message;
             messageBox.className = `message-box ${type}`;
@@ -275,11 +405,9 @@
             }, 5000);
         }
 
-        // Test Server Availability
         async function testServer() {
             try {
                 const response = await fetch('https://five-cuts.vercel.app/', { method: 'HEAD', mode: 'cors' });
-                console.log('Server test response:', response.status);
                 return response.ok;
             } catch (error) {
                 console.error('Server test failed:', error);
@@ -287,7 +415,6 @@
             }
         }
 
-        // Fetch Reservations
         async function fetchReservations() {
             reservationsList.innerHTML = '<p>Loading reservations...</p>';
             const isServerAvailable = await testServer();
@@ -298,7 +425,6 @@
             }
 
             try {
-                console.log(`Sending POST request to ${SERVER_URL}`);
                 const response = await fetch(SERVER_URL, {
                     method: 'POST',
                     headers: {
@@ -310,29 +436,22 @@
                     credentials: 'same-origin'
                 });
 
-                console.log(`Response status: ${response.status}, OK: ${response.ok}`);
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({}));
                     throw new Error(errorData.error || `HTTP error: ${response.status}`);
                 }
 
                 const data = await response.json();
-                console.log('Received reservations:', data);
                 reservationsData = data;
                 displayReservations();
             } catch (error) {
                 console.error('Fetch error:', error.message, error.stack);
-                showMessage(
-                    `Failed to load reservations: ${error.message}. Check the console for details.`,
-                    'error'
-                );
+                showMessage(`Failed to load reservations: ${error.message}.`, 'error');
                 reservationsList.innerHTML = '<p>Failed to load reservations. Please try again later.</p>';
             }
         }
 
-        // Display Reservations
         function displayReservations() {
-            console.log('Displaying reservations:', reservationsData);
             reservationsList.innerHTML = '';
             if (reservationsData.length === 0) {
                 reservationsList.innerHTML = '<p>No reservations available.</p>';
@@ -357,13 +476,10 @@
             }
         }
 
-        // Show Edit Modal
         function showEditModal(tableCode) {
-            console.log('Opening edit modal for table code:', tableCode);
             currentEditTableCode = tableCode;
             const reservation = reservationsData.find(r => r.table_code === tableCode);
             if (!reservation) {
-                console.error('Reservation not found for table code:', tableCode);
                 showMessage('Reservation not found.', 'error');
                 return;
             }
@@ -384,7 +500,6 @@
                 slider.style.setProperty('--value', `${(quantity / 10) * 100}%`);
                 item.classList.toggle('selected', quantity > 0);
 
-                // Remove existing listeners
                 const h3 = item.querySelector('h3');
                 const newH3 = h3.cloneNode(true);
                 h3.parentNode.replaceChild(newH3, h3);
@@ -392,7 +507,6 @@
                 const newSlider = slider.cloneNode(true);
                 slider.parentNode.replaceChild(newSlider, slider);
 
-                // Add new listeners
                 newH3.addEventListener('click', () => {
                     item.classList.toggle('selected');
                     if (!item.classList.contains('selected')) {
@@ -421,22 +535,17 @@
             editModal.style.display = 'block';
         }
 
-        // Close Edit Modal
         function closeEditModal() {
-            console.log('Closing edit modal');
             editModal.style.display = 'none';
             currentEditTableCode = null;
         }
 
-        // Save Edit
         async function saveEdit() {
             if (!currentEditTableCode) {
-                console.error('No table code selected for edit');
                 showMessage('No reservation selected.', 'error');
                 return;
             }
 
-            console.log('Saving edit for table code:', currentEditTableCode);
             const username = document.getElementById('editUsername').value.trim();
             const phoneNumber = document.getElementById('editPhone').value.trim();
             const itemsWithQuantities = Array.from(editModal.querySelectorAll('.menu-item.selected'))
@@ -461,7 +570,6 @@
             }
 
             try {
-                console.log('Sending update request:', { tableCode: currentEditTableCode, username, phoneNumber, items: itemsWithQuantities });
                 const reservation = reservationsData.find(r => r.table_code === currentEditTableCode);
                 const response = await fetch('https://five-cuts.vercel.app/update', {
                     method: 'PUT',
@@ -479,14 +587,13 @@
                     }),
                     mode: 'cors'
                 });
-                console.log(`Update response status: ${response.status}`);
+
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({}));
                     throw new Error(errorData.error || `HTTP error: ${response.status}`);
                 }
-                const data = await response.json();
-                console.log('Update response data:', data);
 
+                const data = await response.json();
                 showMessage(data.message || 'Reservation updated successfully.', 'success');
                 const index = reservationsData.findIndex(r => r.table_code === currentEditTableCode);
                 if (index !== -1) {
@@ -502,22 +609,17 @@
             }
         }
 
-        // Show Confirm Modal
         function showConfirmModal(tableCode) {
-            console.log('Opening confirm modal for table code:', tableCode);
             pendingCancelCode = tableCode;
             document.getElementById('confirmModal').style.display = 'block';
         }
 
-        // Handle Confirmation
         async function confirmCancel(confirmed) {
-            console.log('Confirm cancel:', confirmed, 'Table code:', pendingCancelCode);
             const modal = document.getElementById('confirmModal');
             modal.style.display = 'none';
             if (!confirmed || !pendingCancelCode) return;
 
             try {
-                console.log('Sending cancel request for table code:', pendingCancelCode);
                 const response = await fetch('https://five-cuts.vercel.app/cancel', {
                     method: 'DELETE',
                     headers: {
@@ -527,14 +629,13 @@
                     body: JSON.stringify({ tableCode: pendingCancelCode }),
                     mode: 'cors'
                 });
-                console.log(`Cancel response status: ${response.status}`);
+
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({}));
                     throw new Error(errorData.error || `HTTP error: ${response.status}`);
                 }
-                const data = await response.json();
-                console.log('Cancel response data:', data);
 
+                const data = await response.json();
                 showMessage(data.message || 'Reservation canceled successfully.', 'success');
                 reservationsData = reservationsData.filter(r => r.table_code !== pendingCancelCode);
                 displayReservations();
@@ -545,7 +646,6 @@
             pendingCancelCode = null;
         }
 
-        // Fetch Reservations on Page Load
         window.onload = fetchReservations;
     </script>
 </body>

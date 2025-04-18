@@ -58,12 +58,6 @@
         .nav-links a:hover {
             color: #B8860B;
         }
-        .burger {
-            display: none;
-            font-size: 24px;
-            color: #B8860B;
-            cursor: pointer;
-        }
         .hero {
             margin-top: 60px;
             width: 100%;
@@ -126,30 +120,15 @@
             background-color: #D4A017;
         }
         @media (max-width: 768px) {
-            .burger {
-                display: block;
-                margin-left: auto;
-            }
             .nav-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 60px;
-                left: 0;
-                background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
-                width: 100%;
-                text-align: center;
-                opacity: 0;
-                transform: translateY(-20px);
-                transition: opacity 0.5s ease, transform 0.5s ease;
-            }
-            .nav-links.active {
-                display: flex;
-                opacity: 1;
-                transform: translateY(0);
+                flex-wrap: wrap;
+                justify-content: center;
             }
             .nav-links li {
-                margin: 10px 0;
+                margin: 10px 15px;
+            }
+            .nav-links a {
+                font-size: 16px;
             }
             .hero h1 {
                 font-size: 36px;
@@ -177,7 +156,10 @@
                 height: 40px;
             }
             .nav-links a {
-                font-size: 16px;
+                font-size: 14px;
+            }
+            .nav-links li {
+                margin: 8px 10px;
             }
         }
     </style>
@@ -193,7 +175,6 @@
             <li><a href="contact.html">Contact</a></li>
             <li><a href="restaurant_orders.html">Orders</a></li>
         </ul>
-        <div class="burger" id="burger" onclick="toggleMenu()">☰</div>
     </nav>
 
     <section class="hero">
@@ -201,23 +182,5 @@
         <p>A Luxurious Dining Experience Awaits</p>
         <a href="menu.html" class="btn">Discover More</a>
     </section>
-
-    <script>
-        function toggleMenu() {
-            const navLinks = document.getElementById('navLinks');
-            const burger = document.getElementById('burger');
-            navLinks.classList.toggle('active');
-            burger.textContent = navLinks.classList.contains('active') ? '✖' : '☰';
-        }
-
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.navbar')) {
-                const navLinks = document.getElementById('navLinks');
-                const burger = document.getElementById('burger');
-                navLinks.classList.remove('active');
-                burger.textContent = '☰';
-            }
-        });
-    </script>
 </body>
 </html>

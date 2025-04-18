@@ -20,7 +20,7 @@
         }
         .navbar {
             background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
-            padding: 1rem 2rem;
+            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -28,11 +28,11 @@
             width: 100%;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
         .logo {
-            width: 3rem;
-            height: 3rem;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             transition: transform 0.3s ease;
             object-fit: cover;
@@ -47,12 +47,12 @@
             padding: 0;
         }
         .nav-links li {
-            margin: 0 2rem;
+            margin: 0 30px;
         }
         .nav-links a {
             color: #F5F5DC;
             text-decoration: none;
-            font-size: 1.125rem;
+            font-size: 18px;
             transition: color 0.3s ease;
         }
         .nav-links a:hover {
@@ -60,17 +60,17 @@
         }
         .burger {
             display: none;
-            font-size: 1.5rem;
+            font-size: 24px;
             color: #B8860B;
             cursor: pointer;
         }
         .hero {
-            margin-top: 4rem;
+            margin-top: 60px;
             width: 100%;
-            height: calc(100vh - 4rem);
+            height: calc(100vh - 60px);
             background: linear-gradient(45deg, #1C2526 0%, #2A3334 50%, #4A3F2B 100%);
             position: relative;
-            box-shadow: inset 0 0 5rem rgba(0, 0, 0, 0.7);
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.7);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -87,9 +87,9 @@
             background: repeating-linear-gradient(
                 45deg,
                 rgba(74, 63, 43, 0.2),
-                rgba(74, 63, 43, 0.2) 1rem,
-                transparent 1rem,
-                transparent 2rem
+                rgba(74, 63, 43, 0.2) 10px,
+                transparent 10px,
+                transparent 20px
             );
             opacity: 0.5;
             z-index: 1;
@@ -100,22 +100,22 @@
         }
         .hero h1 {
             color: #B8860B;
-            font-size: 3rem;
-            margin: 0 0 2.5rem 0;
-            text-shadow: 0.1rem 0.1rem 0.3rem rgba(0, 0, 0, 0.5);
+            font-size: 48px;
+            margin: 0 0 40px 0;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
         }
         .hero p {
             color: #D3D3D3;
-            font-size: 1.5rem;
-            margin: 0 0 3.125rem 0;
-            text-shadow: 0.1rem 0.1rem 0.2rem rgba(0, 0, 0, 0.5);
+            font-size: 24px;
+            margin: 0 0 50px 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
         .hero .btn {
             background-color: #B8860B;
             color: #1C2526;
-            padding: 0.75rem 1.5625rem;
+            padding: 12px 25px;
             border: none;
-            border-radius: 0.3125rem;
+            border-radius: 5px;
             cursor: pointer;
             font-family: 'Cinzel', serif;
             transition: all 0.3s ease;
@@ -134,13 +134,13 @@
                 display: none;
                 flex-direction: column;
                 position: absolute;
-                top: 4rem;
+                top: 60px;
                 left: 0;
                 background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
                 width: 100%;
                 text-align: center;
                 opacity: 0;
-                transform: translateY(-1.25rem);
+                transform: translateY(-20px);
                 transition: opacity 0.5s ease, transform 0.5s ease;
             }
             .nav-links.active {
@@ -149,38 +149,35 @@
                 transform: translateY(0);
             }
             .nav-links li {
-                margin: 0.625rem 0;
+                margin: 10px 0;
             }
             .hero h1 {
-                font-size: 2.25rem;
-                margin-bottom: 1.875rem;
+                font-size: 36px;
+                margin-bottom: 30px;
             }
             .hero p {
-                font-size: 1.125rem;
-                margin-bottom: 2.5rem;
+                font-size: 18px;
+                margin-bottom: 40px;
             }
             .hero {
-                padding: 1.25rem;
+                padding: 20px;
             }
         }
         @media (max-width: 480px) {
             .hero h1 {
-                font-size: 1.75rem;
-                margin-bottom: 1.5625rem;
+                font-size: 28px;
+                margin-bottom: 25px;
             }
             .hero p {
-                font-size: 1rem;
-                margin-bottom: 1.875rem;
-            }
-            .hero {
-                padding: 1rem;
+                font-size: 16px;
+                margin-bottom: 30px;
             }
             .logo {
-                width: 2.5rem;
-                height: 2.5rem;
+                width: 40px;
+                height: 40px;
             }
             .nav-links a {
-                font-size: 1rem;
+                font-size: 16px;
             }
         }
     </style>

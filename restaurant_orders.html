@@ -10,13 +10,13 @@
             margin: 0;
             padding: 0;
             font-family: 'Cinzel', serif;
-            background: #1C2526;
-            color: #F5F5DC;
+            background: #1C2526; /* Dark background */
+            color: #F5F5DC; /* Light text */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
         .navbar {
             background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
@@ -54,7 +54,7 @@
         .nav-links a {
             color: #F5F5DC;
             text-decoration: none;
-            font-size: 18px;
+            font-size: 18px; /* Smaller for Desktop */
             transition: color 0.3s ease;
             word-wrap: break-word;
         }
@@ -72,7 +72,7 @@
             text-align: center;
             margin: 90px 0 20px;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            font-size: 36px;
+            font-size: 36px; /* Smaller for Desktop */
             max-width: 100%;
             word-wrap: break-word;
         }
@@ -85,28 +85,28 @@
             border: 1px solid #B8860B;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             width: 100%;
-            max-width: 450px;
+            max-width: 450px; /* Smaller for Desktop */
             box-sizing: border-box;
         }
         .control-panel input[type="text"] {
             padding: 10px;
-            width: 220px;
+            width: 220px; /* Smaller for Desktop */
             max-width: 100%;
             background: #F5F5DC;
             border: none;
             border-radius: 5px;
             font-family: 'Cinzel', serif;
-            font-size: 16px;
+            font-size: 16px; /* Smaller for Desktop */
         }
         .control-panel button {
-            padding: 10px 20px;
+            padding: 10px 20px; /* Smaller for Desktop */
             background-color: #B8860B;
             color: #1C2526;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-family: 'Cinzel', serif;
-            font-size: 16px;
+            font-size: 16px; /* Smaller for Desktop */
             margin-left: 10px;
         }
         .control-panel button:hover {
@@ -115,11 +115,11 @@
         .order-form {
             display: none;
             background: rgba(28, 37, 38, 0.9);
-            padding: 20px;
+            padding: 20px; /* Smaller for Desktop */
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             width: 100%;
-            max-width: 450px;
+            max-width: 450px; /* Smaller for Desktop */
             border: 1px solid #B8860B;
             flex-direction: column;
             align-items: center;
@@ -133,21 +133,21 @@
             color: #F5F5DC;
             text-align: center;
             margin-bottom: 20px;
-            font-size: 24px;
+            font-size: 24px; /* Smaller for Desktop */
             max-width: 100%;
             word-wrap: break-word;
         }
         .order-form input[type="text"],
         .order-form input[type="datetime-local"] {
             width: 100%;
-            padding: 10px;
+            padding: 10px; /* Smaller for Desktop */
             margin-bottom: 15px;
             background: rgba(42, 51, 52, 0.9);
             border: 1px solid #B8860B;
             border-radius: 5px;
             color: #F5F5DC;
             font-family: 'Cinzel', serif;
-            font-size: 16px;
+            font-size: 16px; /* Smaller for Desktop */
             box-sizing: border-box;
         }
         .order-form input[type="datetime-local"] {
@@ -161,7 +161,7 @@
         }
         .order-form .menu-item {
             background: rgba(42, 51, 52, 0.9);
-            padding: 10px;
+            padding: 10px; /* Smaller for Desktop */
             margin-bottom: 10px;
             border-radius: 5px;
             border: 1px solid #B8860B;
@@ -175,7 +175,7 @@
         }
         .order-form .menu-item h4 {
             color: #F5F5DC;
-            font-size: 16px;
+            font-size: 16px; /* Smaller for Desktop */
             margin: 0;
             padding: 5px 0;
             word-wrap: break-word;
@@ -192,14 +192,14 @@
             background: linear-gradient(to right, #B8860B 0%, #B8860B var(--value), #4A3F2B var(--value), #4A3F2B 100%);
             -webkit-appearance: none;
             appearance: none;
-            height: 8px;
+            height: 8px; /* Smaller for Desktop */
             border-radius: 5px;
             outline: none;
             transition: background 0.1s ease;
         }
         .order-form .menu-item input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 20px;
+            width: 20px; /* Smaller for Desktop */
             height: 20px;
             background: #F5F5DC;
             border-radius: 50%;
@@ -207,7 +207,7 @@
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
         }
         .order-form .menu-item input[type="range"]::-moz-range-thumb {
-            width: 20px;
+            width: 20px; /* Smaller for Desktop */
             height: 20px;
             background: #F5F5DC;
             border-radius: 50%;
@@ -217,19 +217,19 @@
         }
         .order-form .menu-item .quantity-label {
             color: #F5F5DC;
-            font-size: 14px;
+            font-size: 14px; /* Smaller for Desktop */
             text-align: center;
             margin-top: 5px;
         }
         .order-form button {
-            padding: 10px 20px;
+            padding: 10px 20px; /* Smaller for Desktop */
             background-color: #B8860B;
             color: #1C2526;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-family: 'Cinzel', serif;
-            font-size: 16px;
+            font-size: 16px; /* Smaller for Desktop */
             margin: 5px 0;
             width: 100%;
             box-sizing: border-box;
@@ -244,15 +244,15 @@
             transform: translateX(-50%);
             background: rgba(72, 91, 72, 0.9);
             color: #F5F5DC;
-            padding: 15px;
+            padding: 15px; /* Smaller for Desktop */
             border-radius: 5px;
             border: 1px solid #B8860B;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             text-align: center;
             font-family: 'Cinzel', serif;
-            font-size: 16px;
+            font-size: 16px; /* Smaller for Desktop */
             z-index: 1000;
-            max-width: 400px;
+            max-width: 400px; /* Smaller for Desktop */
             width: 80%;
             box-sizing: border-box;
             word-wrap: break-word;
@@ -294,10 +294,156 @@
             }
             .control-panel {
                 padding: 15px;
-                max-width: }
-
-/head>
+                max-width: 400px;
+            }
+            .control-panel input[type="text"] {
+                width: 180px;
+                font-size: 14px;
+                padding: 8px;
+            }
+            .control-panel button {
+                padding: 8px 15px;
+                font-size: 14px;
+                margin-left: 8px;
+            }
+            .order-form {
+                padding: 15px;
+                max-width: 400px;
+            }
+            .order-form h3 {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            .order-form input[type="text"],
+            .order-form input[type="datetime-local"] {
+                padding: 8px;
+                font-size: 14px;
+                margin-bottom: 12px;
+            }
+            .order-form .menu-item {
+                padding: 8px;
+                margin-bottom: 8px;
+            }
+            .order-form .menu-item h4 {
+                font-size: 14px;
+                padding: 4px 0;
+            }
+            .order-form .menu-item input[type="range"] {
+                height: 8px;
+            }
+            .order-form .menu-item input[type="range"]::-webkit-slider-thumb {
+                width: 20px;
+                height: 20px;
+            }
+            .order-form .menu-item input[type="range"]::-moz-range-thumb {
+                width: 20px;
+                height: 20px;
+            }
+            .order-form .menu-item .quantity-label {
+                font-size: 12px;
+                margin-top: 4px;
+            }
+            .order-form button {
+                padding: 8px 15px;
+                font-size: 14px;
+                margin: 4px 0;
+            }
+            .message-box {
+                font-size: 14px;
+                max-width: 300px;
+                padding: 12px;
+                top: 80px;
+            }
+        }
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 8px 15px;
+            }
+            .logo {
+                width: 45px;
+                height: 45px;
+            }
+            .burger {
+                font-size: 20px;
+                margin-right: 15px;
+            }
+            .nav-links {
+                top: 61px;
+            }
+            .nav-links a {
+                font-size: 12px;
+            }
+            h1 {
+                font-size: 24px;
+                margin: 70px 0 12px;
+            }
+            .control-panel {
+                padding: 12px;
+                max-width: 320px;
+            }
+            .control-panel input[type="text"] {
+                width: 150px;
+                font-size: 12px;
+                padding: 6px;
+            }
+            .control-panel button {
+                padding: 6px 12px;
+                font-size: 12px;
+                margin-left: 6px;
+            }
+            .order-form {
+                padding: 12px;
+                max-width: 320px;
+            }
+            .order-form h3 {
+                font-size: 18px;
+                margin-bottom: 12px;
+            }
+            .order-form input[type="text"],
+            .order-form input[type="datetime-local"] {
+                padding: 6px;
+                font-size: 12px;
+                margin-bottom: 10px;
+            }
+            .order-form .menu-item {
+                padding: 6px;
+                margin-bottom: 6px;
+            }
+            .order-form .menu-item h4 {
+                font-size: 12px;
+                padding: 3px 0;
+            }
+            .order-form .menu-item input[type="range"] {
+                height: 6px;
+            }
+            .order-form .menu-item input[type="range"]::-webkit-slider-thumb {
+                width: 16px;
+                height: 16px;
+            }
+            .order-form .menu-item input[type="range"]::-moz-range-thumb {
+                width: 16px;
+                height: 16px;
+            }
+            .order-form .menu-item .quantity-label {
+                font-size: 10px;
+                margin-top: 3px;
+            }
+            .order-form button {
+                padding: 6px 12px;
+                font-size: 12px;
+                margin: 3px 0;
+            }
+            .message-box {
+                font-size: 12px;
+                max-width: 280px;
+                padding: 8px;
+                top: 70px;
+            }
+        }
+    </style>
+</head>
 <body>
+    <!-- Navigation Bar -->
     <nav class="navbar">
         <img src="logo.png" alt="Five Cuts Logo" class="logo">
         <ul class="nav-links" id="navLinks">
@@ -311,11 +457,16 @@
         <div class="burger" id="burger" onclick="toggleMenu()">☰</div>
     </nav>
 
+    <!-- Main Title -->
     <h1>Restaurant Orders</h1>
+
+    <!-- Table Code Input -->
     <div class="control-panel">
         <input type="text" id="tableCodeInput" placeholder="Enter Table Code">
         <button onclick="loadOrder()">Load Order</button>
     </div>
+
+    <!-- Order Form -->
     <div class="order-form" id="orderForm">
         <h3>Manage Reservation</h3>
         <input type="text" id="tableNumber" placeholder="Table Number" readonly>

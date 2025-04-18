@@ -6,6 +6,9 @@
     <title>Five Cuts - Restaurant Orders</title>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" as="style" onload="this.rel='stylesheet'">
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
             margin: 0;
             padding: 0;
@@ -20,7 +23,7 @@
         }
         .navbar {
             background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
-            padding: 12px 25px;
+            padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -29,12 +32,10 @@
             top: 0;
             z-index: 1000;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            box-sizing: border-box;
-            max-width: 100%;
         }
         .logo {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             transition: transform 0.3s ease;
             object-fit: cover;
@@ -49,24 +50,22 @@
             padding: 0;
         }
         .nav-links li {
-            margin: 0 25px; /* Smaller for Desktop */
+            margin: 0 30px;
         }
         .nav-links a {
             color: #F5F5DC;
             text-decoration: none;
-            font-size: 16px; /* Smaller for Desktop */
+            font-size: 18px;
             transition: color 0.3s ease;
-            word-wrap: break-word;
         }
         .nav-links a:hover {
             color: #B8860B;
         }
         .burger {
             display: none;
-            font-size: 28px;
+            font-size: 24px;
             color: #B8860B;
             cursor: pointer;
-            margin-right: 25px;
         }
         h1 {
             text-align: center;
@@ -305,7 +304,7 @@
                 display: none;
                 flex-direction: column;
                 position: absolute;
-                top: 70px;
+                top: 60px;
                 left: 0;
                 background: linear-gradient(120deg, #1C2526 0%, #2A3334 60%, #4A3F2B 100%);
                 width: 100%;
@@ -320,10 +319,10 @@
                 transform: translateY(0);
             }
             .nav-links li {
-                margin: 12px 0;
+                margin: 10px 0;
             }
             .nav-links a {
-                font-size: 14px;
+                font-size: 16px;
             }
             h1 {
                 font-size: 28px;
@@ -406,18 +405,17 @@
                 padding: 8px 15px;
             }
             .logo {
-                width: 45px;
-                height: 45px;
+                width: 40px;
+                height: 40px;
             }
             .burger {
                 font-size: 20px;
-                margin-right: 15px;
             }
             .nav-links {
-                top: 61px;
+                top: 60px;
             }
             .nav-links a {
-                font-size: 12px;
+                font-size: 16px;
             }
             h1 {
                 font-size: 24px;
@@ -838,5 +836,6 @@
             }, 5000);
         }
     </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9323ca741eca69ed',t:'MTc0NDk3NTQxNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
